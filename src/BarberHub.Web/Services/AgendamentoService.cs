@@ -99,10 +99,41 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
         return livres;
     }
 
-    public Task<Resultado<Agendamento>> Confirmar(int barbeariaId, int agendamentoId) => throw new NotImplementedException();
-    public Task<Resultado<Agendamento>> Concluir(int barbeariaId, int agendamentoId) => throw new NotImplementedException();
-    public Task<Resultado<Agendamento>> Cancelar(int barbeariaId, int agendamentoId) => throw new NotImplementedException();
-    public Task<List<Agendamento>> AgendaDoDia(int barbeariaId, DateOnly data) => throw new NotImplementedException();
+    // Fluxo: Agendado -> Confirmado -> Concluído. Agendado/Confirmado podem ser cancelados.
+    // Concluído e Cancelado são estados finais.
+    public Task<Resultado<Agendamento>> Confirmar(int barbeariaId, int agendamentoId) =>
+        MudarStatus(barbeariaId, agendamentoId, StatusAgendamento.Confirmado);
+
+    public Task<Resultado<Agendamento>> Concluir(int barbeariaId, int agendamentoId) =>
+        MudarStatus(barbeariaId, agendamentoId, StatusAgendamento.Concluido);
+
+    public Task<Resultado<Agendamento>> Cancelar(int barbeariaId, int agendamentoId) =>
+        MudarStatus(barbeariaId, agendamentoId, StatusAgendamento.Cancelado);
+
+    public Task<List<Agendamento>> AgendaDoDia(int barbeariaId, DateOnly data)
+    {
+        var inicioDoDia = data.ToDateTime(TimeOnly.MinValue);
+        return db.Agendamentos
+            .Include(a => a.Barbeiro).Include(a => a.Servico).Include(a => a.Cliente)
+            .Where(a => a.BarbeariaId == barbeariaId && a.Inicio >= inicioDoDia && a.Inicio < inicioDoDia.AddDays(1))
+            .OrderBy(a => a.Inicio).ThenBy(a => a.Barbeiro.Nome)
+            .ToListAsync();
+    }
+
+    private async Task<Resultado<Agendamento>> MudarStatus(int barbeariaId, int agendamentoId, StatusAgendamento novo)
+    {
+        var agendamento = await db.Agendamentos.SingleOrDefaultAsync(a => a.Id == agendamentoId && a.BarbeariaId == barbeariaId);
+        if (agendamento is null)
+            return Resultado<Agendamento>.Falha("Atendimento não encontrado.");
+        if (agendamento.Status == StatusAgendamento.Concluido)
+            return Resultado<Agendamento>.Falha("Este atendimento já foi concluído.");
+        if (agendamento.Status == StatusAgendamento.Cancelado)
+            return Resultado<Agendamento>.Falha("Este atendimento foi cancelado.");
+
+        agendamento.Status = novo;
+        await db.SaveChangesAsync();
+        return Resultado<Agendamento>.Ok(agendamento);
+    }
 
     private async Task<bool> CabeNoExpediente(int barbeariaId, DateTime inicio, DateTime fim)
     {

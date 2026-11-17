@@ -240,11 +240,11 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
         await PrepararBarbearia();
         var agendamento = (await Agendar(_ze, _corte, Terca.AddHours(10))).Valor!;
 
-        var confirmado = await Agenda.Confirmar(_barbearia.Id, agendamento.Id);
-        var concluido = await Agenda.Concluir(_barbearia.Id, agendamento.Id);
+        var aposConfirmar = (await Agenda.Confirmar(_barbearia.Id, agendamento.Id)).Valor!.Status;
+        var aposConcluir = (await Agenda.Concluir(_barbearia.Id, agendamento.Id)).Valor!.Status;
 
-        Assert.Equal(StatusAgendamento.Confirmado, confirmado.Valor!.Status);
-        Assert.Equal(StatusAgendamento.Concluido, concluido.Valor!.Status);
+        Assert.Equal(StatusAgendamento.Confirmado, aposConfirmar);
+        Assert.Equal(StatusAgendamento.Concluido, aposConcluir);
     }
 
     [Fact]
