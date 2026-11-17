@@ -15,6 +15,9 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Barbearia>().HasIndex(b => b.Email).IsUnique();
+        modelBuilder.Entity<Barbearia>().HasIndex(b => b.Slug).IsUnique();
+        modelBuilder.Entity<HorarioFuncionamento>().HasIndex(h => new { h.BarbeariaId, h.DiaSemana }).IsUnique();
         modelBuilder.Entity<Servico>().Property(s => s.Preco).HasPrecision(10, 2);
         modelBuilder.Entity<Agendamento>().Property(a => a.Preco).HasPrecision(10, 2);
         modelBuilder.Entity<Pagamento>().Property(p => p.Valor).HasPrecision(10, 2);

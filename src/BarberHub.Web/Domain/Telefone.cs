@@ -28,5 +28,7 @@ public static class Telefone
         return valido ? Resultado<string>.Ok(digitos) : Resultado<string>.Falha(MensagemInvalido);
     }
 
-    public static string Formatar(string normalizado) => throw new NotImplementedException();
+    /// <summary>"11987654321" -> "(11) 98765-4321".</summary>
+    public static string Formatar(string normalizado) =>
+        normalizado.Length == 11 ? $"({normalizado[..2]}) {normalizado[2..7]}-{normalizado[7..]}" : normalizado;
 }
