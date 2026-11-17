@@ -38,4 +38,28 @@ public class CadastroServiceTests(PostgresFixture banco) : TesteComBanco(banco)
 
         Assert.Equal("corte-fino-3", terceira.Valor!.Slug);
     }
+
+    [Fact]
+    public async Task Email_ja_cadastrado_e_recusado_mesmo_com_maiusculas()
+    {
+        await Servico.CadastrarBarbearia(new NovaBarbearia("Corte Fino", "dono@corte.com", "segredo123", Plano.Basico));
+
+        var repetido = await Servico.CadastrarBarbearia(
+            new NovaBarbearia("Outra", "  DONO@Corte.com ", "segredo123", Plano.Basico));
+
+        Assert.False(repetido.Sucesso);
+        Assert.Equal("Este e-mail já está cadastrado.", repetido.Erro);
+    }
+
+    [Theory]
+    [InlineData("", "dono@corte.com", "segredo123", "Informe o nome da barbearia.")]
+    [InlineData("Corte Fino", "dono-sem-arroba", "segredo123", "Informe um e-mail válido.")]
+    [InlineData("Corte Fino", "dono@corte.com", "12345", "A senha deve ter pelo menos 6 caracteres.")]
+    public async Task Cadastro_com_dados_invalidos_e_recusado(string nome, string email, string senha, string erro)
+    {
+        var resultado = await Servico.CadastrarBarbearia(new NovaBarbearia(nome, email, senha, Plano.Basico));
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal(erro, resultado.Erro);
+    }
 }
