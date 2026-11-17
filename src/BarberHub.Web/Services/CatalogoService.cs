@@ -95,6 +95,11 @@ public class CatalogoService(AppDbContext db)
         return Resultado<Barbeiro>.Ok(barbeiro);
     }
 
+    public Task<List<HorarioFuncionamento>> ObterExpediente(int barbeariaId) => throw new NotImplementedException();
+
+    public Task<Resultado<bool>> DefinirExpediente(int barbeariaId, DayOfWeek dia, TimeOnly? abre, TimeOnly? fecha) =>
+        throw new NotImplementedException();
+
     private static string? ValidarServico(string nome, decimal preco, int duracaoMinutos)
     {
         if (string.IsNullOrWhiteSpace(nome))

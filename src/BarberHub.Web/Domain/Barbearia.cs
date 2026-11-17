@@ -14,3 +14,13 @@ public class Barbearia
     public DateOnly AssinaturaValidaAte { get; set; }
     public bool EmPeriodoGratis { get; set; }
 }
+
+/// <summary>Horário de funcionamento de um dia da semana. Dia sem registro = fechado.</summary>
+public class HorarioFuncionamento
+{
+    public int Id { get; set; }
+    public int BarbeariaId { get; set; }
+    public DayOfWeek DiaSemana { get; set; }
+    public TimeOnly Abre { get; set; }
+    public TimeOnly Fecha { get; set; }
+}

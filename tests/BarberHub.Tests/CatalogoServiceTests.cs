@@ -121,4 +121,43 @@ public class CatalogoServiceTests(PostgresFixture banco) : TesteComBanco(banco)
         Assert.True(tiao.Sucesso);
         Assert.Equal("Tião", Assert.Single(await Catalogo.ListarBarbeirosAtivos(barbearia.Id)).Nome);
     }
+
+    [Fact]
+    public async Task Barbearia_nova_abre_de_segunda_a_sabado_das_9h_as_19h()
+    {
+        var barbearia = await CriarBarbearia();
+
+        var expediente = await Catalogo.ObterExpediente(barbearia.Id);
+
+        Assert.Equal(
+            [DayOfWeek.Monday, DayOfWeek.Tuesday, DayOfWeek.Wednesday, DayOfWeek.Thursday, DayOfWeek.Friday, DayOfWeek.Saturday],
+            expediente.Select(h => h.DiaSemana));
+        Assert.All(expediente, h => Assert.Equal((new TimeOnly(9, 0), new TimeOnly(19, 0)), (h.Abre, h.Fecha)));
+    }
+
+    [Fact]
+    public async Task Dono_altera_horario_de_um_dia_e_fecha_outro()
+    {
+        var barbearia = await CriarBarbearia();
+
+        await Catalogo.DefinirExpediente(barbearia.Id, DayOfWeek.Saturday, new TimeOnly(8, 0), new TimeOnly(14, 0));
+        await Catalogo.DefinirExpediente(barbearia.Id, DayOfWeek.Monday, null, null);
+        await Catalogo.DefinirExpediente(barbearia.Id, DayOfWeek.Sunday, new TimeOnly(9, 0), new TimeOnly(12, 0));
+
+        var expediente = (await Catalogo.ObterExpediente(barbearia.Id)).ToDictionary(h => h.DiaSemana);
+        Assert.False(expediente.ContainsKey(DayOfWeek.Monday));
+        Assert.Equal((new TimeOnly(8, 0), new TimeOnly(14, 0)), (expediente[DayOfWeek.Saturday].Abre, expediente[DayOfWeek.Saturday].Fecha));
+        Assert.Equal(new TimeOnly(12, 0), expediente[DayOfWeek.Sunday].Fecha);
+    }
+
+    [Fact]
+    public async Task Fechamento_antes_da_abertura_e_recusado()
+    {
+        var barbearia = await CriarBarbearia();
+
+        var resultado = await Catalogo.DefinirExpediente(barbearia.Id, DayOfWeek.Friday, new TimeOnly(18, 0), new TimeOnly(9, 0));
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal("O horário de fechamento deve ser depois da abertura.", resultado.Erro);
+    }
 }
