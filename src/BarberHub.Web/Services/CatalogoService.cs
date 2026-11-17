@@ -62,11 +62,38 @@ public class CatalogoService(AppDbContext db)
     private Task<Servico?> BuscarServico(int barbeariaId, int servicoId) =>
         db.Servicos.SingleOrDefaultAsync(s => s.Id == servicoId && s.BarbeariaId == barbeariaId);
 
-    public Task<Resultado<Barbeiro>> CadastrarBarbeiro(int barbeariaId, string nome) => throw new NotImplementedException();
+    /// <summary>O número de barbeiros ativos é limitado pelo plano contratado.</summary>
+    public async Task<Resultado<Barbeiro>> CadastrarBarbeiro(int barbeariaId, string nome)
+    {
+        if (string.IsNullOrWhiteSpace(nome))
+            return Resultado<Barbeiro>.Falha("Informe o nome do barbeiro.");
 
-    public Task<List<Barbeiro>> ListarBarbeirosAtivos(int barbeariaId) => throw new NotImplementedException();
+        var barbearia = await db.Barbearias.SingleAsync(b => b.Id == barbeariaId);
+        var plano = Planos.Info(barbearia.Plano);
+        var ativos = await db.Barbeiros.CountAsync(b => b.BarbeariaId == barbeariaId && b.Ativo);
+        if (ativos >= plano.LimiteBarbeiros)
+            return Resultado<Barbeiro>.Falha(
+                $"Seu plano {plano.Nome} permite até {plano.LimiteBarbeiros} barbeiro(s). Faça upgrade de plano para cadastrar mais.");
 
-    public Task<Resultado<Barbeiro>> InativarBarbeiro(int barbeariaId, int barbeiroId) => throw new NotImplementedException();
+        var barbeiro = new Barbeiro { BarbeariaId = barbeariaId, Nome = nome.Trim() };
+        db.Barbeiros.Add(barbeiro);
+        await db.SaveChangesAsync();
+        return Resultado<Barbeiro>.Ok(barbeiro);
+    }
+
+    public Task<List<Barbeiro>> ListarBarbeirosAtivos(int barbeariaId) =>
+        db.Barbeiros.Where(b => b.BarbeariaId == barbeariaId && b.Ativo).OrderBy(b => b.Nome).ToListAsync();
+
+    public async Task<Resultado<Barbeiro>> InativarBarbeiro(int barbeariaId, int barbeiroId)
+    {
+        var barbeiro = await db.Barbeiros.SingleOrDefaultAsync(b => b.Id == barbeiroId && b.BarbeariaId == barbeariaId);
+        if (barbeiro is null)
+            return Resultado<Barbeiro>.Falha("Barbeiro não encontrado.");
+
+        barbeiro.Ativo = false;
+        await db.SaveChangesAsync();
+        return Resultado<Barbeiro>.Ok(barbeiro);
+    }
 
     private static string? ValidarServico(string nome, decimal preco, int duracaoMinutos)
     {
