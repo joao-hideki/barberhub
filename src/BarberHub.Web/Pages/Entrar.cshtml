@@ -1,0 +1,31 @@
+@page
+@model EntrarModel
+@{ ViewData["Title"] = "Entrar"; }
+
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+        <div class="bh-card">
+            <h3>Entrar</h3>
+            @if (Model.Erro is not null)
+            {
+                <div class="alert alert-danger">@Model.Erro</div>
+            }
+            <form method="post">
+                <input type="hidden" asp-for="ReturnUrl" />
+                <div class="mb-3">
+                    <label class="form-label" for="Email">E-mail</label>
+                    <input class="form-control" asp-for="Email" type="email" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label" for="Senha">Senha</label>
+                    <input class="form-control" asp-for="Senha" type="password" required />
+                </div>
+                <button class="btn btn-bh w-100">Entrar</button>
+            </form>
+            <p class="small text-muted mt-3 mb-0">
+                Demonstração: @BarberHub.Web.Data.DadosIniciais.EmailDemo / @BarberHub.Web.Data.DadosIniciais.SenhaDemo<br />
+                Ainda não tem conta? <a asp-page="/Cadastro">Teste grátis</a>
+            </p>
+        </div>
+    </div>
+</div>

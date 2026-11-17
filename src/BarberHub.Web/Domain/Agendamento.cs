@@ -30,3 +30,15 @@ public class Agendamento
     public decimal Preco { get; set; }
     public StatusAgendamento Status { get; set; } = StatusAgendamento.Agendado;
 }
+
+public static class StatusAgendamentoExtensions
+{
+    public static string Rotulo(this StatusAgendamento status) => status switch
+    {
+        StatusAgendamento.Agendado => "Agendado",
+        StatusAgendamento.Confirmado => "Confirmado",
+        StatusAgendamento.Concluido => "Concluído",
+        StatusAgendamento.Cancelado => "Cancelado",
+        _ => status.ToString()
+    };
+}

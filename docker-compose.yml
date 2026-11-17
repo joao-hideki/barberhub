@@ -18,7 +18,7 @@ services:
   web:
     build: .
     environment:
-      ConnectionStrings__Default: Host=db;Database=barberhub;Username=${POSTGRES_USER:-barberhub};Password=${POSTGRES_PASSWORD}
+      ConnectionStrings__Default: Host=db;Database=barberhub;Username=${POSTGRES_USER:-barberhub};Password=${POSTGRES_PASSWORD};Gss Encryption Mode=Disable
       TZ: America/Sao_Paulo
     ports:
       - "8080:8080"

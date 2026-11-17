@@ -1,31 +1,40 @@
-html {
-  font-size: 14px;
+:root {
+  --bh-escuro: #1c1917;
+  --bh-ouro: #d97706;
+  --bh-fundo: #fafaf9;
 }
 
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
+html { font-size: 15px; }
+body { background: var(--bh-fundo); color: var(--bh-escuro); min-height: 100vh; display: flex; flex-direction: column; }
+main { flex: 1; }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+.bh-nav { background: var(--bh-escuro); }
+.bh-logo { font-weight: 800; letter-spacing: .5px; }
+.bh-logo span { color: var(--bh-ouro); }
+.btn-bh { background: var(--bh-ouro); color: #fff; border: none; font-weight: 600; }
+.btn-bh:hover, .btn-bh:focus { background: #b45309; color: #fff; }
+.bh-footer { background: var(--bh-escuro); color: #a8a29e; padding: 1rem 0; font-size: .85rem; }
 
-html {
-  position: relative;
-  min-height: 100%;
-}
+.bh-hero { background: linear-gradient(135deg, #1c1917 0%, #44403c 100%); color: #fff; border-radius: 1rem; padding: 3rem 2rem; }
+.bh-hero h1 { font-weight: 800; }
+.bh-hero .destaque { color: var(--bh-ouro); }
 
-body {
-  margin-bottom: 60px;
-}
+.bh-card { background: #fff; border: 1px solid #e7e5e4; border-radius: .75rem; padding: 1.25rem; height: 100%; }
+.bh-kpi { font-size: 1.8rem; font-weight: 800; }
+.bh-plano.destaque { border: 2px solid var(--bh-ouro); }
+.bh-preco { font-size: 2rem; font-weight: 800; }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
-}
+.bh-slots { display: flex; flex-wrap: wrap; gap: .5rem; }
+.bh-slot input { position: absolute; opacity: 0; }
+.bh-slot label { display: inline-block; border: 1px solid #d6d3d1; border-radius: .5rem; padding: .4rem .8rem; cursor: pointer; background: #fff; }
+.bh-slot input:checked + label { background: var(--bh-ouro); border-color: var(--bh-ouro); color: #fff; }
+.bh-slot input:focus-visible + label { outline: 2px solid var(--bh-escuro); }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
-}
+.badge-status { padding: .3rem .6rem; border-radius: 1rem; font-size: .8rem; font-weight: 600; white-space: nowrap; }
+.status-Agendado { background: #e0f2fe; color: #075985; }
+.status-Confirmado { background: #dcfce7; color: #166534; }
+.status-Concluido { background: #e7e5e4; color: #44403c; }
+.status-Cancelado { background: #fee2e2; color: #991b1b; }
+tr.cancelado td { opacity: .55; }
+
+.table td, .table th { vertical-align: middle; }

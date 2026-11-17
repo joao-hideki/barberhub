@@ -1,0 +1,34 @@
+@page
+@model BarberHub.Web.Pages.Painel.BarbeirosModel
+@{ ViewData["Title"] = "Barbeiros"; }
+
+<h2>Barbeiros</h2>
+<p class="text-muted">
+    Plano <strong>@Model.Plano.Nome</strong>: @Model.Barbeiros.Count de @Model.Plano.LimiteBarbeiros barbeiro(s) em uso.
+    @if (Model.Barbeiros.Count >= Model.Plano.LimiteBarbeiros && Model.Plano.Plano == Plano.Basico)
+    {
+        <a asp-page="/Painel/Assinatura">Fazer upgrade para o Pro</a>
+    }
+</p>
+
+<div class="bh-card mb-4">
+    <form method="post" asp-page-handler="Criar" class="row g-2 align-items-end">
+        <div class="col-md-9"><label class="form-label" for="nome">Nome do barbeiro</label><input id="nome" name="nome" class="form-control" required /></div>
+        <div class="col-md-3"><button class="btn btn-bh w-100">Adicionar</button></div>
+    </form>
+</div>
+
+<div class="bh-card">
+    @if (Model.Barbeiros.Count == 0)
+    {
+        <p class="text-muted mb-0">Nenhum barbeiro cadastrado ainda.</p>
+    }
+    @foreach (var b in Model.Barbeiros)
+    {
+        <form method="post" asp-page-handler="Inativar" class="d-flex justify-content-between align-items-center border-bottom py-2">
+            <input type="hidden" name="id" value="@b.Id" />
+            <span class="fw-semibold">@b.Nome</span>
+            <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Remover @b.Nome?')">Remover</button>
+        </form>
+    }
+</div>

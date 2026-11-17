@@ -1,0 +1,87 @@
+@page
+@model BarberHub.Web.Pages.Painel.IndexModel
+@{
+    ViewData["Title"] = "Painel";
+    var ativa = Model.Barbearia.AssinaturaAtiva(Model.Hoje);
+    var emAberto = Model.AgendaDeHoje.Count(a => a.Status is StatusAgendamento.Agendado or StatusAgendamento.Confirmado);
+}
+
+<div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+    <h2 class="mb-0">@Model.Barbearia.Nome</h2>
+    <a asp-page="/Painel/Agenda" class="btn btn-bh">Abrir agenda de hoje</a>
+</div>
+
+@if (!ativa)
+{
+    <div class="alert alert-danger">
+        Sua assinatura venceu em @Model.Barbearia.AssinaturaValidaAte.ToString("dd/MM/yyyy") e a página de agendamento está bloqueada.
+        <a asp-page="/Painel/Assinatura" class="alert-link">Renovar agora</a>.
+    </div>
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="bh-card">
+            <div class="text-muted small">Atendimentos hoje (em aberto)</div>
+            <div class="bh-kpi">@emAberto</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="bh-card">
+            <div class="text-muted small">Concluídos no mês</div>
+            <div class="bh-kpi">@Model.Resumo.AtendimentosConcluidos</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="bh-card">
+            <div class="text-muted small">Faturamento do mês</div>
+            <div class="bh-kpi">@Formulario.Moeda(Model.Resumo.Faturamento)</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="bh-card">
+            <div class="text-muted small">Assinatura · plano @Planos.Info(Model.Barbearia.Plano).Nome</div>
+            <div class="fw-bold mt-1">
+                @if (!ativa) { <span class="text-danger">Vencida</span> }
+                else if (Model.Barbearia.EmPeriodoGratis) { <span>Grátis até @Model.Barbearia.AssinaturaValidaAte.ToString("dd/MM")</span> }
+                else { <span class="text-success">Ativa até @Model.Barbearia.AssinaturaValidaAte.ToString("dd/MM/yyyy")</span> }
+            </div>
+            <a asp-page="/Painel/Assinatura" class="small">Gerenciar</a>
+        </div>
+    </div>
+</div>
+
+<div class="bh-card mb-4">
+    <div class="fw-semibold">Link de agendamento para seus clientes</div>
+    <div class="input-group mt-2">
+        <input class="form-control" id="link" value="@Model.LinkPublico" readonly />
+        <button class="btn btn-outline-secondary" type="button" onclick="navigator.clipboard.writeText(document.getElementById('link').value); this.textContent='Copiado!'">Copiar</button>
+        <a class="btn btn-outline-secondary" href="@Model.LinkPublico" target="_blank">Abrir</a>
+    </div>
+    <div class="small text-muted mt-1">Coloque na bio do Instagram, no Google Meu Negócio e no status do WhatsApp.</div>
+</div>
+
+<div class="bh-card">
+    <h5>Hoje, @Model.Hoje.ToString("dd/MM")</h5>
+    @if (Model.AgendaDeHoje.Count == 0)
+    {
+        <p class="text-muted mb-0">Nenhum atendimento hoje.</p>
+    }
+    else
+    {
+        <table class="table mb-0">
+            <tbody>
+                @foreach (var a in Model.AgendaDeHoje)
+                {
+                    <tr class="@(a.Status == StatusAgendamento.Cancelado ? "cancelado" : "")">
+                        <td class="fw-bold">@a.Inicio.ToString("HH:mm")</td>
+                        <td>@a.Cliente.Nome</td>
+                        <td>@a.Servico.Nome</td>
+                        <td>@a.Barbeiro.Nome</td>
+                        <td><span class="badge-status status-@a.Status">@a.Status.Rotulo()</span></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

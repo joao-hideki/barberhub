@@ -1,0 +1,48 @@
+@page
+@model BarberHub.Web.Pages.Painel.ServicosModel
+@{
+    ViewData["Title"] = "Serviços";
+    int[] duracoes = [15, 30, 45, 60, 75, 90, 120];
+}
+
+<h2>Serviços</h2>
+<p class="text-muted">O preço vai para o faturamento, e a duração define quanto tempo o horário fica bloqueado na agenda do barbeiro.</p>
+
+<div class="bh-card mb-4">
+    <h5>Novo serviço</h5>
+    <form method="post" asp-page-handler="Criar" class="row g-2 align-items-end">
+        <div class="col-md-5"><label class="form-label" for="novo-nome">Nome</label><input id="novo-nome" name="nome" class="form-control" placeholder="Ex.: Corte degradê" required /></div>
+        <div class="col-md-3"><label class="form-label" for="novo-preco">Preço (R$)</label><input id="novo-preco" name="preco" class="form-control" inputmode="decimal" placeholder="40,00" required /></div>
+        <div class="col-md-2">
+            <label class="form-label" for="novo-duracao">Duração</label>
+            <select id="novo-duracao" name="duracao" class="form-select">
+                @foreach (var d in duracoes) { <option value="@d" selected="@(d == 30)">@d min</option> }
+            </select>
+        </div>
+        <div class="col-md-2"><button class="btn btn-bh w-100">Adicionar</button></div>
+    </form>
+</div>
+
+<div class="bh-card">
+    @if (Model.Servicos.Count == 0)
+    {
+        <p class="text-muted mb-0">Nenhum serviço cadastrado ainda.</p>
+    }
+    @foreach (var s in Model.Servicos)
+    {
+        <form method="post" class="row g-2 align-items-center border-bottom py-2">
+            <input type="hidden" name="id" value="@s.Id" />
+            <div class="col-md-5"><input name="nome" value="@s.Nome" class="form-control" aria-label="Nome" /></div>
+            <div class="col-md-2"><input name="preco" value="@s.Preco.ToString("0.00")" class="form-control" inputmode="decimal" aria-label="Preço" /></div>
+            <div class="col-md-2">
+                <select name="duracao" class="form-select" aria-label="Duração">
+                    @foreach (var d in duracoes.Union([s.DuracaoMinutos]).Order()) { <option value="@d" selected="@(d == s.DuracaoMinutos)">@d min</option> }
+                </select>
+            </div>
+            <div class="col-md-3 d-flex gap-2">
+                <button class="btn btn-outline-dark w-100" asp-page-handler="Salvar">Salvar</button>
+                <button class="btn btn-outline-danger w-100" asp-page-handler="Inativar" onclick="return confirm('Remover este serviço do catálogo?')">Remover</button>
+            </div>
+        </form>
+    }
+</div>

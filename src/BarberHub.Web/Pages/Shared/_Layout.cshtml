@@ -1,52 +1,66 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BarberHub.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] · BarberHub</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/BarberHub.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-dark bh-nav">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">BarberHub.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+                <a class="navbar-brand bh-logo" asp-page="/Index">&#9986; Barber<span>Hub</span></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-label="Menu">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
-                    </ul>
+                <div class="collapse navbar-collapse" id="menu">
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item"><a class="nav-link" asp-page="/Painel/Index">Painel</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-page="/Painel/Agenda">Agenda</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-page="/Painel/Servicos">Serviços</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-page="/Painel/Barbeiros">Barbeiros</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-page="/Painel/Expediente">Expediente</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-page="/Painel/Assinatura">Assinatura</a></li>
+                        </ul>
+                        <form method="post" asp-page="/Sair" class="d-flex align-items-center gap-3">
+                            <span class="text-light small opacity-75">@User.Identity.Name</span>
+                            <button class="btn btn-sm btn-outline-light">Sair</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <ul class="navbar-nav ms-auto align-items-lg-center">
+                            <li class="nav-item"><a class="nav-link" asp-page="/Entrar">Entrar</a></li>
+                            <li class="nav-item"><a class="btn btn-bh ms-lg-2" asp-page="/Cadastro">Teste grátis</a></li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - BarberHub.Web - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
+    <main class="container py-4">
+        @if (TempData["Sucesso"] is string sucesso)
+        {
+            <div class="alert alert-success">@sucesso</div>
+        }
+        @if (TempData["Erro"] is string erro)
+        {
+            <div class="alert alert-danger">@erro</div>
+        }
+        @RenderBody()
+    </main>
+
+    <footer class="bh-footer">
+        <div class="container">BarberHub · MVP acadêmico (FATEC) · agendamento online para barbearias</div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

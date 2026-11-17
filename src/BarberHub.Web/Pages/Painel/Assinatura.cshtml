@@ -1,0 +1,71 @@
+@page
+@model BarberHub.Web.Pages.Painel.AssinaturaModel
+@{
+    ViewData["Title"] = "Assinatura";
+    var b = Model.Barbearia;
+    var ativa = b.AssinaturaAtiva(Model.Hoje);
+}
+
+<h2>Assinatura</h2>
+<p class="mb-4">
+    Plano atual: <strong>@Planos.Info(b.Plano).Nome</strong> ·
+    @if (!ativa) { <span class="text-danger fw-bold">vencida em @b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</span> }
+    else if (b.EmPeriodoGratis) { <span>período grátis até <strong>@b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</strong></span> }
+    else { <span class="text-success">ativa até <strong>@b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</strong></span> }
+</p>
+
+<form method="post">
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <h5>1. Escolha o plano</h5>
+            @foreach (var p in Planos.Todos)
+            {
+                <label class="bh-card d-block mb-3 bh-plano" style="cursor:pointer">
+                    <input type="radio" class="form-check-input me-2" asp-for="Plano" value="@p.Plano" />
+                    <strong>@p.Nome</strong> · @Formulario.Moeda(p.PrecoMensal)/mês · até @p.LimiteBarbeiros barbeiro(s)
+                </label>
+            }
+            <p class="small text-muted">
+                Pagar durante o período grátis não faz perder os dias restantes: o mês pago começa a contar depois deles.
+            </p>
+        </div>
+        <div class="col-lg-6">
+            <h5>2. Dados do cartão</h5>
+            <div class="bh-card">
+                <div class="mb-2"><label class="form-label" for="NumeroCartao">Número do cartão</label><input class="form-control" asp-for="NumeroCartao" inputmode="numeric" placeholder="4111 1111 1111 1111" required /></div>
+                <div class="mb-2"><label class="form-label" for="NomeTitular">Nome impresso</label><input class="form-control" asp-for="NomeTitular" required /></div>
+                <div class="row g-2 mb-3">
+                    <div class="col"><label class="form-label" for="Validade">Validade (MM/AA)</label><input class="form-control" asp-for="Validade" placeholder="12/30" required /></div>
+                    <div class="col"><label class="form-label" for="Cvv">CVV</label><input class="form-control" asp-for="Cvv" inputmode="numeric" placeholder="123" required /></div>
+                </div>
+                <button class="btn btn-bh w-100">Pagar e ativar plano</button>
+                <div class="alert alert-warning small mt-3 mb-0">
+                    <strong>Ambiente de demonstração:</strong> o pagamento é simulado e nenhuma cobrança real é feita.
+                    Use <code>4111 1111 1111 1111</code> (aprovado) ou um cartão terminado em <code>0000</code> (recusado).
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (Model.Historico.Count > 0)
+{
+    <h5 class="mt-5">Histórico de pagamentos</h5>
+    <div class="bh-card">
+        <table class="table mb-0">
+            <thead><tr><th>Data</th><th>Plano</th><th>Valor</th><th>Resultado</th><th>Transação</th></tr></thead>
+            <tbody>
+                @foreach (var p in Model.Historico)
+                {
+                    <tr>
+                        <td>@p.Data.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@Planos.Info(p.Plano).Nome</td>
+                        <td>@Formulario.Moeda(p.Valor)</td>
+                        <td class="@(p.Aprovado ? "text-success" : "text-danger")">@p.Mensagem</td>
+                        <td><small class="text-muted">@p.TransacaoId</small></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
