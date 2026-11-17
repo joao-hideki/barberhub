@@ -13,6 +13,8 @@ public class Barbearia
     public Plano Plano { get; set; }
     public DateOnly AssinaturaValidaAte { get; set; }
     public bool EmPeriodoGratis { get; set; }
+
+    public bool AssinaturaAtiva(DateOnly hoje) => hoje <= AssinaturaValidaAte;
 }
 
 /// <summary>Horário de funcionamento de um dia da semana. Dia sem registro = fechado.</summary>

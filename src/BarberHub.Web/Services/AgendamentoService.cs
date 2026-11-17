@@ -13,7 +13,14 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
 
     public async Task<Resultado<Agendamento>> Agendar(NovoAgendamento pedido)
     {
-        var servico = await db.Servicos.SingleAsync(s => s.Id == pedido.ServicoId);
+        var barbearia = await db.Barbearias.SingleAsync(b => b.Id == pedido.BarbeariaId);
+        if (!barbearia.AssinaturaAtiva(DateOnly.FromDateTime(relogio.AgoraLocal())))
+            return Resultado<Agendamento>.Falha("Agenda indisponível: a assinatura desta barbearia está vencida.");
+
+        var servico = await db.Servicos.SingleOrDefaultAsync(s => s.Id == pedido.ServicoId && s.BarbeariaId == pedido.BarbeariaId && s.Ativo);
+        var barbeiroValido = await db.Barbeiros.AnyAsync(b => b.Id == pedido.BarbeiroId && b.BarbeariaId == pedido.BarbeariaId && b.Ativo);
+        if (servico is null || !barbeiroValido)
+            return Resultado<Agendamento>.Falha("Serviço ou barbeiro indisponível.");
         var telefone = Telefone.Normalizar(pedido.Telefone);
         if (!telefone.Sucesso)
             return Resultado<Agendamento>.Falha(telefone.Erro!);
