@@ -14,12 +14,23 @@ public class CadastroService(AppDbContext db, TimeProvider relogio)
 
     public async Task<Resultado<Barbearia>> CadastrarBarbearia(NovaBarbearia dados)
     {
+        var email = (dados.Email ?? "").Trim().ToLowerInvariant();
+
+        if (string.IsNullOrWhiteSpace(dados.Nome))
+            return Resultado<Barbearia>.Falha("Informe o nome da barbearia.");
+        if (!System.Net.Mail.MailAddress.TryCreate(email, out _))
+            return Resultado<Barbearia>.Falha("Informe um e-mail válido.");
+        if ((dados.Senha ?? "").Length < 6)
+            return Resultado<Barbearia>.Falha("A senha deve ter pelo menos 6 caracteres.");
+        if (await db.Barbearias.AnyAsync(b => b.Email == email))
+            return Resultado<Barbearia>.Falha("Este e-mail já está cadastrado.");
+
         var hoje = DateOnly.FromDateTime(relogio.AgoraLocal());
         var barbearia = new Barbearia
         {
             Nome = dados.Nome.Trim(),
             Slug = await GerarSlugUnico(dados.Nome),
-            Email = dados.Email,
+            Email = email,
             Plano = dados.Plano,
             EmPeriodoGratis = true,
             AssinaturaValidaAte = hoje.AddDays(DiasGratis)
