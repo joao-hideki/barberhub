@@ -11,11 +11,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<HorarioFuncionamento> Expedientes => Set<HorarioFuncionamento>();
     public DbSet<Cliente> Clientes => Set<Cliente>();
     public DbSet<Agendamento> Agendamentos => Set<Agendamento>();
+    public DbSet<Pagamento> Pagamentos => Set<Pagamento>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Servico>().Property(s => s.Preco).HasPrecision(10, 2);
         modelBuilder.Entity<Agendamento>().Property(a => a.Preco).HasPrecision(10, 2);
+        modelBuilder.Entity<Pagamento>().Property(p => p.Valor).HasPrecision(10, 2);
         modelBuilder.Entity<Cliente>().HasIndex(c => new { c.BarbeariaId, c.Telefone }).IsUnique();
 
         // Datas são gravadas no horário local da barbearia (sem fuso).
