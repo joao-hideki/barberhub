@@ -68,8 +68,36 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
         return Resultado<Agendamento>.Ok(agendamento);
     }
 
-    public Task<List<TimeOnly>> HorariosDisponiveis(int barbeariaId, int barbeiroId, int servicoId, DateOnly data) =>
-        throw new NotImplementedException();
+    /// <summary>
+    /// Horários (em blocos de 15 min) em que o serviço cabe inteiro no expediente,
+    /// sem sobrepor outro atendimento do barbeiro e sem estar no passado.
+    /// </summary>
+    public async Task<List<TimeOnly>> HorariosDisponiveis(int barbeariaId, int barbeiroId, int servicoId, DateOnly data)
+    {
+        var servico = await db.Servicos.SingleOrDefaultAsync(s => s.Id == servicoId && s.BarbeariaId == barbeariaId && s.Ativo);
+        var expediente = await db.Expedientes.SingleOrDefaultAsync(h => h.BarbeariaId == barbeariaId && h.DiaSemana == data.DayOfWeek);
+        if (servico is null || expediente is null)
+            return [];
+
+        var inicioDoDia = data.ToDateTime(TimeOnly.MinValue);
+        var ocupados = await db.Agendamentos
+            .Where(a => a.BarbeiroId == barbeiroId && a.Status != StatusAgendamento.Cancelado
+                        && a.Inicio < inicioDoDia.AddDays(1) && a.Fim > inicioDoDia)
+            .Select(a => new { a.Inicio, a.Fim })
+            .ToListAsync();
+
+        var agora = relogio.AgoraLocal();
+        var livres = new List<TimeOnly>();
+        for (var inicio = data.ToDateTime(expediente.Abre);
+             inicio.AddMinutes(servico.DuracaoMinutos) <= data.ToDateTime(expediente.Fecha);
+             inicio = inicio.AddMinutes(CatalogoService.BlocoMinutos))
+        {
+            var fim = inicio.AddMinutes(servico.DuracaoMinutos);
+            if (inicio >= agora && !ocupados.Any(o => o.Inicio < fim && inicio < o.Fim))
+                livres.Add(TimeOnly.FromDateTime(inicio));
+        }
+        return livres;
+    }
 
     private async Task<bool> CabeNoExpediente(int barbeariaId, DateTime inicio, DateTime fim)
     {
