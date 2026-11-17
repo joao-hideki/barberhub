@@ -1,9 +1,12 @@
+using BarberHub.Web.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace BarberHub.Web.Data;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
+    public DbSet<Barbearia> Barbearias => Set<Barbearia>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Datas são gravadas no horário local da barbearia (sem fuso).
