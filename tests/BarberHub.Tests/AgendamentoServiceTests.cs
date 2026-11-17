@@ -195,4 +195,42 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
         Assert.False(resultado.Sucesso);
         Assert.Equal("Agenda indisponível: a assinatura desta barbearia está vencida.", resultado.Erro);
     }
+
+    private static TimeOnly H(int hora, int minuto = 0) => new(hora, minuto);
+
+    [Fact]
+    public async Task Horarios_disponiveis_pulam_o_periodo_ocupado_e_respeitam_a_duracao()
+    {
+        await PrepararBarbearia();
+        await Agendar(_ze, _corteEBarba, Terca.AddHours(10)); // Zé ocupado 10h–11h
+
+        var horarios = await Agenda.HorariosDisponiveis(_barbearia.Id, _ze.Id, _corteEBarba.Id, DateOnly.FromDateTime(Terca));
+
+        Assert.Equal(H(9), horarios.First());
+        Assert.DoesNotContain(H(9, 15), horarios);  // 9h15–10h15 invadiria as 10h
+        Assert.DoesNotContain(H(10, 30), horarios);
+        Assert.Contains(H(11), horarios);
+        Assert.Equal(H(18), horarios.Last());       // 18h–19h é o último que cabe
+    }
+
+    [Fact]
+    public async Task Horarios_de_hoje_comecam_no_proximo_bloco_livre()
+    {
+        await PrepararBarbearia();
+        Relogio.Advance(TimeSpan.FromMinutes(4 * 60 + 10)); // segunda, 13:10
+
+        var horarios = await Agenda.HorariosDisponiveis(_barbearia.Id, _ze.Id, _corte.Id, new DateOnly(2026, 11, 23));
+
+        Assert.Equal(H(13, 15), horarios.First());
+    }
+
+    [Fact]
+    public async Task Dia_fechado_nao_tem_horarios()
+    {
+        await PrepararBarbearia();
+
+        var domingo = await Agenda.HorariosDisponiveis(_barbearia.Id, _ze.Id, _corte.Id, new DateOnly(2026, 11, 29));
+
+        Assert.Empty(domingo);
+    }
 }

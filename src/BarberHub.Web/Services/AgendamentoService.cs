@@ -68,6 +68,9 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
         return Resultado<Agendamento>.Ok(agendamento);
     }
 
+    public Task<List<TimeOnly>> HorariosDisponiveis(int barbeariaId, int barbeiroId, int servicoId, DateOnly data) =>
+        throw new NotImplementedException();
+
     private async Task<bool> CabeNoExpediente(int barbeariaId, DateTime inicio, DateTime fim)
     {
         var dia = await db.Expedientes.SingleOrDefaultAsync(h => h.BarbeariaId == barbeariaId && h.DiaSemana == inicio.DayOfWeek);
