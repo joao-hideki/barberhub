@@ -37,4 +37,48 @@ public class CatalogoServiceTests(PostgresFixture banco) : TesteComBanco(banco)
         Assert.Equal(erro, resultado.Erro);
         Assert.Empty(await Catalogo.ListarServicosAtivos(barbearia.Id));
     }
+
+    [Fact]
+    public async Task Servico_inativado_sai_do_catalogo()
+    {
+        var barbearia = await CriarBarbearia();
+        var corte = (await Catalogo.CadastrarServico(barbearia.Id, "Corte", 40m, 30)).Valor!;
+        await Catalogo.CadastrarServico(barbearia.Id, "Barba", 30m, 30);
+
+        var resultado = await Catalogo.InativarServico(barbearia.Id, corte.Id);
+
+        Assert.True(resultado.Sucesso);
+        var restante = Assert.Single(await Catalogo.ListarServicosAtivos(barbearia.Id));
+        Assert.Equal("Barba", restante.Nome);
+    }
+
+    [Fact]
+    public async Task Barbearia_nao_altera_servico_de_outra_barbearia()
+    {
+        var minha = await CriarBarbearia();
+        var outra = await CriarBarbearia();
+        var servicoDaOutra = (await Catalogo.CadastrarServico(outra.Id, "Corte", 40m, 30)).Valor!;
+
+        var inativar = await Catalogo.InativarServico(minha.Id, servicoDaOutra.Id);
+        var atualizar = await Catalogo.AtualizarServico(minha.Id, servicoDaOutra.Id, "Corte", 1m, 15);
+
+        Assert.False(inativar.Sucesso);
+        Assert.False(atualizar.Sucesso);
+        Assert.Equal("Serviço não encontrado.", inativar.Erro);
+        var intacto = Assert.Single(await Catalogo.ListarServicosAtivos(outra.Id));
+        Assert.Equal(40m, intacto.Preco);
+    }
+
+    [Fact]
+    public async Task Preco_e_duracao_do_servico_podem_ser_alterados()
+    {
+        var barbearia = await CriarBarbearia();
+        var corte = (await Catalogo.CadastrarServico(barbearia.Id, "Corte", 40m, 30)).Valor!;
+
+        var resultado = await Catalogo.AtualizarServico(barbearia.Id, corte.Id, "Corte degradê", 50m, 45);
+
+        Assert.True(resultado.Sucesso);
+        var atualizado = Assert.Single(await Catalogo.ListarServicosAtivos(barbearia.Id));
+        Assert.Equal(("Corte degradê", 50m, 45), (atualizado.Nome, atualizado.Preco, atualizado.DuracaoMinutos));
+    }
 }

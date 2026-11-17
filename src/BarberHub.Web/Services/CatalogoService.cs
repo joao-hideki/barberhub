@@ -30,6 +30,11 @@ public class CatalogoService(AppDbContext db)
     public Task<List<Servico>> ListarServicosAtivos(int barbeariaId) =>
         db.Servicos.Where(s => s.BarbeariaId == barbeariaId && s.Ativo).OrderBy(s => s.Nome).ToListAsync();
 
+    public Task<Resultado<Servico>> AtualizarServico(int barbeariaId, int servicoId, string nome, decimal preco, int duracaoMinutos) =>
+        throw new NotImplementedException();
+
+    public Task<Resultado<Servico>> InativarServico(int barbeariaId, int servicoId) => throw new NotImplementedException();
+
     private static string? ValidarServico(string nome, decimal preco, int duracaoMinutos)
     {
         if (string.IsNullOrWhiteSpace(nome))
