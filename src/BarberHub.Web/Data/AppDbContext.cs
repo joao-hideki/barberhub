@@ -16,6 +16,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     {
         modelBuilder.Entity<Servico>().Property(s => s.Preco).HasPrecision(10, 2);
         modelBuilder.Entity<Agendamento>().Property(a => a.Preco).HasPrecision(10, 2);
+        modelBuilder.Entity<Cliente>().HasIndex(c => new { c.BarbeariaId, c.Telefone }).IsUnique();
 
         // Datas são gravadas no horário local da barbearia (sem fuso).
         foreach (var propriedade in modelBuilder.Model.GetEntityTypes()

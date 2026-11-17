@@ -8,10 +8,15 @@ public record NovoAgendamento(int BarbeariaId, int BarbeiroId, int ServicoId, Da
 
 public class AgendamentoService(AppDbContext db, TimeProvider relogio)
 {
+    /// <summary>Antiabuso: evita que um número inventado ou trote trave a agenda.</summary>
+    public const int MaximoEmAbertoPorCliente = 2;
+
     public async Task<Resultado<Agendamento>> Agendar(NovoAgendamento pedido)
     {
         var servico = await db.Servicos.SingleAsync(s => s.Id == pedido.ServicoId);
-        var telefone = Telefone.Normalizar(pedido.Telefone).Valor!;
+        var telefone = Telefone.Normalizar(pedido.Telefone);
+        if (!telefone.Sucesso)
+            return Resultado<Agendamento>.Falha(telefone.Erro!);
         var inicio = pedido.Inicio;
         var fim = inicio.AddMinutes(servico.DuracaoMinutos);
 
@@ -24,7 +29,23 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
         if (await BarbeiroOcupado(pedido.BarbeiroId, inicio, fim))
             return Resultado<Agendamento>.Falha("Este horário não está mais disponível para este barbeiro.");
 
-        var cliente = new Cliente { BarbeariaId = pedido.BarbeariaId, Nome = pedido.NomeCliente.Trim(), Telefone = telefone };
+        var cliente = await db.Clientes.SingleOrDefaultAsync(c => c.BarbeariaId == pedido.BarbeariaId && c.Telefone == telefone.Valor);
+        if (cliente is null)
+        {
+            cliente = new Cliente { BarbeariaId = pedido.BarbeariaId, Telefone = telefone.Valor! };
+            db.Clientes.Add(cliente);
+        }
+        else
+        {
+            var emAberto = db.Agendamentos.Where(a => a.ClienteId == cliente.Id
+                                                      && (a.Status == StatusAgendamento.Agendado || a.Status == StatusAgendamento.Confirmado));
+            if (await emAberto.AnyAsync(a => a.Inicio < fim && inicio < a.Fim))
+                return Resultado<Agendamento>.Falha("Você já tem um horário marcado neste período.");
+            if (await emAberto.CountAsync(a => a.Inicio >= relogio.AgoraLocal()) >= MaximoEmAbertoPorCliente)
+                return Resultado<Agendamento>.Falha(
+                    $"Você já tem {MaximoEmAbertoPorCliente} horários em aberto nesta barbearia. Para marcar mais, fale com a barbearia.");
+        }
+        cliente.Nome = pedido.NomeCliente.Trim();
         var agendamento = new Agendamento
         {
             BarbeariaId = pedido.BarbeariaId,
