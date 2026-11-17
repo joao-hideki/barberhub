@@ -6,6 +6,8 @@ namespace BarberHub.Web.Services;
 
 public record NovoAgendamento(int BarbeariaId, int BarbeiroId, int ServicoId, DateTime Inicio, string NomeCliente, string Telefone);
 
+public record ResumoMensal(int AtendimentosConcluidos, decimal Faturamento);
+
 public class AgendamentoService(AppDbContext db, TimeProvider relogio)
 {
     /// <summary>Antiabuso: evita que um número inventado ou trote trave a agenda.</summary>
@@ -119,6 +121,8 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
             .OrderBy(a => a.Inicio).ThenBy(a => a.Barbeiro.Nome)
             .ToListAsync();
     }
+
+    public Task<ResumoMensal> ResumoDoMes(int barbeariaId, DateOnly mes) => throw new NotImplementedException();
 
     private async Task<Resultado<Agendamento>> MudarStatus(int barbeariaId, int agendamentoId, StatusAgendamento novo)
     {

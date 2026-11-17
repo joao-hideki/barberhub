@@ -287,4 +287,23 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
         Assert.Equal("Atendimento não encontrado.", resultado.Erro);
         Assert.Equal(StatusAgendamento.Agendado, Assert.Single(await Agenda.AgendaDoDia(_barbearia.Id, DateOnly.FromDateTime(Terca))).Status);
     }
+
+    [Fact]
+    public async Task Faturamento_do_mes_soma_apenas_concluidos_pelo_preco_da_epoca_do_agendamento()
+    {
+        await PrepararBarbearia();
+        var a = (await Agendar(_ze, _corte, Terca.AddHours(10), telefone: "11911111111")).Valor!;         // R$ 40
+        var b = (await Agendar(_ze, _corteEBarba, Terca.AddHours(11), telefone: "11922222222")).Valor!;   // R$ 65
+        var c = (await Agendar(_tiao, _corte, Terca.AddHours(10), telefone: "11933333333")).Valor!;       // cancelado
+        await Agendar(_tiao, _corte, Terca.AddHours(11), telefone: "11944444444");                        // ainda agendado
+        await Catalogo.AtualizarServico(_barbearia.Id, _corte.Id, "Corte", 55m, 30);                      // reajuste depois
+
+        await Agenda.Concluir(_barbearia.Id, a.Id);
+        await Agenda.Concluir(_barbearia.Id, b.Id);
+        await Agenda.Cancelar(_barbearia.Id, c.Id);
+
+        var resumo = await Agenda.ResumoDoMes(_barbearia.Id, new DateOnly(2026, 11, 1));
+        Assert.Equal(2, resumo.AtendimentosConcluidos);
+        Assert.Equal(105m, resumo.Faturamento); // 40 + 65, e não 55 + 65
+    }
 }
