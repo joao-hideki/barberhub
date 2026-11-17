@@ -2,6 +2,7 @@ using BarberHub.Web.Data;
 using System.Globalization;
 using System.Text;
 using BarberHub.Web.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace BarberHub.Web.Services;
@@ -11,6 +12,9 @@ public record NovaBarbearia(string Nome, string Email, string Senha, Plano Plano
 public class CadastroService(AppDbContext db, TimeProvider relogio)
 {
     public const int DiasGratis = 14;
+
+    // Hash com salt (PBKDF2) do próprio ASP.NET Core: a senha nunca é gravada em texto puro.
+    private static readonly PasswordHasher<Barbearia> Hasher = new();
 
     public async Task<Resultado<Barbearia>> CadastrarBarbearia(NovaBarbearia dados)
     {
@@ -35,6 +39,7 @@ public class CadastroService(AppDbContext db, TimeProvider relogio)
             EmPeriodoGratis = true,
             AssinaturaValidaAte = hoje.AddDays(DiasGratis)
         };
+        barbearia.SenhaHash = Hasher.HashPassword(barbearia, dados.Senha!);
         db.Barbearias.Add(barbearia);
         await db.SaveChangesAsync();
         return Resultado<Barbearia>.Ok(barbearia);
@@ -58,5 +63,14 @@ public class CadastroService(AppDbContext db, TimeProvider relogio)
         return slug;
     }
 
-    public Task<Barbearia?> Autenticar(string email, string senha) => throw new NotImplementedException();
+    public async Task<Barbearia?> Autenticar(string email, string senha)
+    {
+        var normalizado = (email ?? "").Trim().ToLowerInvariant();
+        var barbearia = await db.Barbearias.SingleOrDefaultAsync(b => b.Email == normalizado);
+        if (barbearia is null)
+            return null;
+
+        var verificacao = Hasher.VerifyHashedPassword(barbearia, barbearia.SenhaHash, senha ?? "");
+        return verificacao == PasswordVerificationResult.Failed ? null : barbearia;
+    }
 }
