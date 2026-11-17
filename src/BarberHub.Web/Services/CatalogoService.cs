@@ -95,10 +95,35 @@ public class CatalogoService(AppDbContext db)
         return Resultado<Barbeiro>.Ok(barbeiro);
     }
 
-    public Task<List<HorarioFuncionamento>> ObterExpediente(int barbeariaId) => throw new NotImplementedException();
+    public async Task<List<HorarioFuncionamento>> ObterExpediente(int barbeariaId)
+    {
+        var dias = await db.Expedientes.Where(h => h.BarbeariaId == barbeariaId).ToListAsync();
+        // Ordem de exibição: segunda ... domingo.
+        return dias.OrderBy(h => ((int)h.DiaSemana + 6) % 7).ToList();
+    }
 
-    public Task<Resultado<bool>> DefinirExpediente(int barbeariaId, DayOfWeek dia, TimeOnly? abre, TimeOnly? fecha) =>
-        throw new NotImplementedException();
+    /// <summary>Define o horário de um dia. Abre/fecha nulos = barbearia fechada nesse dia.</summary>
+    public async Task<Resultado<bool>> DefinirExpediente(int barbeariaId, DayOfWeek dia, TimeOnly? abre, TimeOnly? fecha)
+    {
+        if (abre is not null && fecha is not null && fecha <= abre)
+            return Resultado<bool>.Falha("O horário de fechamento deve ser depois da abertura.");
+
+        var atual = await db.Expedientes.SingleOrDefaultAsync(h => h.BarbeariaId == barbeariaId && h.DiaSemana == dia);
+        if (abre is null || fecha is null)
+        {
+            if (atual is not null)
+                db.Expedientes.Remove(atual);
+        }
+        else
+        {
+            atual ??= db.Expedientes.Add(new HorarioFuncionamento { BarbeariaId = barbeariaId, DiaSemana = dia }).Entity;
+            atual.Abre = abre.Value;
+            atual.Fecha = fecha.Value;
+        }
+
+        await db.SaveChangesAsync();
+        return Resultado<bool>.Ok(true);
+    }
 
     private static string? ValidarServico(string nome, decimal preco, int duracaoMinutos)
     {

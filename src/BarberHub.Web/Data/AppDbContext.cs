@@ -8,6 +8,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Barbearia> Barbearias => Set<Barbearia>();
     public DbSet<Servico> Servicos => Set<Servico>();
     public DbSet<Barbeiro> Barbeiros => Set<Barbeiro>();
+    public DbSet<HorarioFuncionamento> Expedientes => Set<HorarioFuncionamento>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

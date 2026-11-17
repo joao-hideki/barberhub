@@ -42,6 +42,14 @@ public class CadastroService(AppDbContext db, TimeProvider relogio)
         barbearia.SenhaHash = Hasher.HashPassword(barbearia, dados.Senha!);
         db.Barbearias.Add(barbearia);
         await db.SaveChangesAsync();
+
+        // Expediente padrão: segunda a sábado, 9h às 19h (o dono pode alterar depois).
+        for (var dia = DayOfWeek.Monday; dia <= DayOfWeek.Saturday; dia++)
+            db.Expedientes.Add(new HorarioFuncionamento
+            {
+                BarbeariaId = barbearia.Id, DiaSemana = dia, Abre = new TimeOnly(9, 0), Fecha = new TimeOnly(19, 0)
+            });
+        await db.SaveChangesAsync();
         return Resultado<Barbearia>.Ok(barbearia);
     }
 
