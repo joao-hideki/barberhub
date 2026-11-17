@@ -1,4 +1,6 @@
 using BarberHub.Web.Data;
+using BarberHub.Web.Domain;
+using BarberHub.Web.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Time.Testing;
 using Npgsql;
@@ -28,6 +30,17 @@ public abstract class TesteComBanco : IAsyncLifetime
 
     protected AppDbContext NovoContexto() =>
         new(new DbContextOptionsBuilder<AppDbContext>().UseNpgsql(_connectionString).Options);
+
+    private int _contador;
+
+    /// <summary>Cria uma barbearia pelo fluxo real de cadastro.</summary>
+    protected async Task<Barbearia> CriarBarbearia(Plano plano = Plano.Pro)
+    {
+        var n = ++_contador;
+        var resultado = await new CadastroService(Db, Relogio).CadastrarBarbearia(
+            new NovaBarbearia($"Barbearia {n}", $"dono{n}@teste.com", "segredo123", plano));
+        return resultado.Valor!;
+    }
 
     public async Task InitializeAsync()
     {
