@@ -19,7 +19,7 @@ main { flex: 1; }
 .bh-hero h1 { font-weight: 800; }
 .bh-hero .destaque { color: var(--bh-ouro); }
 
-.bh-card { background: #fff; border: 1px solid #e7e5e4; border-radius: .75rem; padding: 1.25rem; height: 100%; }
+.bh-card { background: #fff; border: 1px solid #e7e5e4; border-radius: .75rem; padding: 1.25rem; }
 .bh-kpi { font-size: 1.8rem; font-weight: 800; }
 .bh-plano.destaque { border: 2px solid var(--bh-ouro); }
 .bh-preco { font-size: 2rem; font-weight: 800; }

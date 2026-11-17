@@ -21,25 +21,25 @@
 
 <div class="row g-3 mb-4">
     <div class="col-md-3">
-        <div class="bh-card">
+        <div class="bh-card h-100">
             <div class="text-muted small">Atendimentos hoje (em aberto)</div>
             <div class="bh-kpi">@emAberto</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="bh-card">
+        <div class="bh-card h-100">
             <div class="text-muted small">Concluídos no mês</div>
             <div class="bh-kpi">@Model.Resumo.AtendimentosConcluidos</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="bh-card">
+        <div class="bh-card h-100">
             <div class="text-muted small">Faturamento do mês</div>
             <div class="bh-kpi">@Formulario.Moeda(Model.Resumo.Faturamento)</div>
         </div>
     </div>
     <div class="col-md-3">
-        <div class="bh-card">
+        <div class="bh-card h-100">
             <div class="text-muted small">Assinatura · plano @Planos.Info(Model.Barbearia.Plano).Nome</div>
             <div class="fw-bold mt-1">
                 @if (!ativa) { <span class="text-danger">Vencida</span> }

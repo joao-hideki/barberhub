@@ -25,9 +25,9 @@
 </section>
 
 <section class="row g-4 mb-5">
-    <div class="col-md-4"><div class="bh-card"><h5>Agenda sem conflito</h5><p class="mb-0 text-muted">Cada serviço bloqueia o próprio tempo na agenda, e o sistema nunca deixa marcar dois clientes no mesmo horário do barbeiro.</p></div></div>
-    <div class="col-md-4"><div class="bh-card"><h5>Cliente agenda sozinho</h5><p class="mb-0 text-muted">Sem cadastro nem senha: nome e celular. A barbearia confirma pelo WhatsApp com um clique.</p></div></div>
-    <div class="col-md-4"><div class="bh-card"><h5>Faturamento do mês</h5><p class="mb-0 text-muted">Acompanhe os atendimentos concluídos e quanto a barbearia faturou no mês.</p></div></div>
+    <div class="col-md-4"><div class="bh-card h-100"><h5>Agenda sem conflito</h5><p class="mb-0 text-muted">Cada serviço bloqueia o próprio tempo na agenda, e o sistema nunca deixa marcar dois clientes no mesmo horário do barbeiro.</p></div></div>
+    <div class="col-md-4"><div class="bh-card h-100"><h5>Cliente agenda sozinho</h5><p class="mb-0 text-muted">Sem cadastro nem senha: nome e celular. A barbearia confirma pelo WhatsApp com um clique.</p></div></div>
+    <div class="col-md-4"><div class="bh-card h-100"><h5>Faturamento do mês</h5><p class="mb-0 text-muted">Acompanhe os atendimentos concluídos e quanto a barbearia faturou no mês.</p></div></div>
 </section>
 
 <section class="mb-4">
@@ -36,7 +36,7 @@
         @foreach (var plano in Planos.Todos)
         {
             <div class="col-md-6">
-                <div class="bh-card bh-plano @(plano.Plano == Plano.Pro ? "destaque" : "")">
+                <div class="bh-card h-100 bh-plano @(plano.Plano == Plano.Pro ? "destaque" : "")">
                     <h4>@plano.Nome</h4>
                     <div class="bh-preco">@Formulario.Moeda(plano.PrecoMensal)<small class="fs-6 text-muted">/mês</small></div>
                     <ul class="mt-3 mb-0">

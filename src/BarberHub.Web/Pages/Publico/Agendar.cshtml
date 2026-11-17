@@ -69,7 +69,7 @@
                 <form method="get" class="bh-card mb-4">
                     <h5>1. O que você quer fazer?</h5>
                     <div class="row g-2 align-items-end">
-                        <div class="col-md-5">
+                        <div class="col-md-12 col-lg-5">
                             <label class="form-label" for="ServicoId">Serviço</label>
                             <select class="form-select" name="ServicoId" id="ServicoId" required>
                                 <option value="">Escolha...</option>
@@ -79,7 +79,7 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4 col-lg-2">
                             <label class="form-label" for="BarbeiroId">Barbeiro</label>
                             <select class="form-select" name="BarbeiroId" id="BarbeiroId" required>
                                 @foreach (var b in Model.Barbeiros)
@@ -88,7 +88,7 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-2">
+                        <div class="col-md-4 col-lg-3">
                             <label class="form-label" for="Data">Dia</label>
                             <select class="form-select" name="Data" id="Data">
                                 @foreach (var d in Model.DiasAbertos)
@@ -98,14 +98,14 @@
                                 }
                             </select>
                         </div>
-                        <div class="col-md-2"><button class="btn btn-dark w-100">Ver horários</button></div>
+                        <div class="col-md-4 col-lg-2"><button class="btn btn-dark w-100">Ver horários</button></div>
                     </div>
                 </form>
 
                 @* Etapa 2: horário + dados do cliente *@
                 @if (Model.Horarios is not null)
                 {
-                    <form method="post" asp-page-handler="Revisar" asp-route-slug="@slug" class="bh-card">
+                    <form method="post" asp-page-handler="Revisar" asp-route-slug="@slug" class="bh-card mb-4">
                         <input type="hidden" asp-for="ServicoId" />
                         <input type="hidden" asp-for="BarbeiroId" />
                         <input type="hidden" asp-for="Data" />
