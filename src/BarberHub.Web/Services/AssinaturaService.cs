@@ -24,4 +24,6 @@ public class AssinaturaService(AppDbContext db, IGatewayPagamento gateway, TimeP
         await db.SaveChangesAsync();
         return Resultado<Barbearia>.Ok(barbearia);
     }
+
+    public Task<List<Pagamento>> Historico(int barbeariaId) => throw new NotImplementedException();
 }
