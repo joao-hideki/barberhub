@@ -46,4 +46,32 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
         Assert.Equal(Terca.AddHours(11), agendamento.Fim);
         Assert.Equal(65m, agendamento.Preco);
     }
+
+    [Theory]
+    [InlineData(10, 0)]   // mesmo início
+    [InlineData(10, 30)]  // começa no meio do atendimento das 10h às 11h
+    [InlineData(9, 30)]   // corte+barba das 9h30 invadiria as 10h
+    public async Task Horario_que_sobrepoe_atendimento_do_mesmo_barbeiro_e_recusado(int hora, int minuto)
+    {
+        await PrepararBarbearia();
+        await Agendar(_ze, _corteEBarba, Terca.AddHours(10), telefone: "11911111111");
+
+        var resultado = await Agendar(_ze, _corteEBarba, Terca.AddHours(hora).AddMinutes(minuto), telefone: "11922222222");
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal("Este horário não está mais disponível para este barbeiro.", resultado.Erro);
+    }
+
+    [Fact]
+    public async Task Horario_encostado_no_fim_do_anterior_ou_com_outro_barbeiro_e_aceito()
+    {
+        await PrepararBarbearia();
+        await Agendar(_ze, _corteEBarba, Terca.AddHours(10), telefone: "11911111111");
+
+        var logoDepois = await Agendar(_ze, _corte, Terca.AddHours(11), telefone: "11922222222");
+        var outroBarbeiro = await Agendar(_tiao, _corte, Terca.AddHours(10), telefone: "11933333333");
+
+        Assert.True(logoDepois.Sucesso, logoDepois.Erro);
+        Assert.True(outroBarbeiro.Sucesso, outroBarbeiro.Erro);
+    }
 }
