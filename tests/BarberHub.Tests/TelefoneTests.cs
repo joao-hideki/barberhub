@@ -16,6 +16,12 @@ public class TelefoneTests
         Assert.True(resultado.Sucesso);
         Assert.Equal("11987654321", resultado.Valor);
     }
+
+    [Fact]
+    public void Celular_normalizado_e_exibido_com_mascara()
+    {
+        Assert.Equal("(11) 98765-4321", Telefone.Formatar("11987654321"));
+    }
 }
 
 public class TelefoneInvalidoTests

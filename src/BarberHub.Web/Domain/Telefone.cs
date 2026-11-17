@@ -27,4 +27,6 @@ public static class Telefone
 
         return valido ? Resultado<string>.Ok(digitos) : Resultado<string>.Falha(MensagemInvalido);
     }
+
+    public static string Formatar(string normalizado) => throw new NotImplementedException();
 }
