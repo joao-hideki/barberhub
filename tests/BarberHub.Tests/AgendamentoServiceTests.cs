@@ -233,4 +233,58 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
 
         Assert.Empty(domingo);
     }
+
+    [Fact]
+    public async Task Atendimento_segue_o_fluxo_agendado_confirmado_concluido()
+    {
+        await PrepararBarbearia();
+        var agendamento = (await Agendar(_ze, _corte, Terca.AddHours(10))).Valor!;
+
+        var confirmado = await Agenda.Confirmar(_barbearia.Id, agendamento.Id);
+        var concluido = await Agenda.Concluir(_barbearia.Id, agendamento.Id);
+
+        Assert.Equal(StatusAgendamento.Confirmado, confirmado.Valor!.Status);
+        Assert.Equal(StatusAgendamento.Concluido, concluido.Valor!.Status);
+    }
+
+    [Fact]
+    public async Task Atendimento_concluido_nao_pode_ser_cancelado_e_cancelado_nao_pode_ser_confirmado()
+    {
+        await PrepararBarbearia();
+        var concluido = (await Agendar(_ze, _corte, Terca.AddHours(10))).Valor!;
+        await Agenda.Concluir(_barbearia.Id, concluido.Id);
+        var cancelado = (await Agendar(_ze, _corte, Terca.AddHours(11))).Valor!;
+        await Agenda.Cancelar(_barbearia.Id, cancelado.Id);
+
+        var cancelarConcluido = await Agenda.Cancelar(_barbearia.Id, concluido.Id);
+        var confirmarCancelado = await Agenda.Confirmar(_barbearia.Id, cancelado.Id);
+
+        Assert.Equal("Este atendimento já foi concluído.", cancelarConcluido.Erro);
+        Assert.Equal("Este atendimento foi cancelado.", confirmarCancelado.Erro);
+    }
+
+    [Fact]
+    public async Task Cancelar_libera_o_horario_para_outro_cliente()
+    {
+        await PrepararBarbearia();
+        var agendamento = (await Agendar(_ze, _corte, Terca.AddHours(10), telefone: "11911111111")).Valor!;
+
+        await Agenda.Cancelar(_barbearia.Id, agendamento.Id);
+        var outroCliente = await Agendar(_ze, _corte, Terca.AddHours(10), telefone: "11922222222");
+
+        Assert.True(outroCliente.Sucesso, outroCliente.Erro);
+    }
+
+    [Fact]
+    public async Task Barbearia_nao_altera_atendimento_de_outra_barbearia()
+    {
+        await PrepararBarbearia();
+        var agendamento = (await Agendar(_ze, _corte, Terca.AddHours(10))).Valor!;
+        var outra = await CriarBarbearia();
+
+        var resultado = await Agenda.Cancelar(outra.Id, agendamento.Id);
+
+        Assert.Equal("Atendimento não encontrado.", resultado.Erro);
+        Assert.Equal(StatusAgendamento.Agendado, Assert.Single(await Agenda.AgendaDoDia(_barbearia.Id, DateOnly.FromDateTime(Terca))).Status);
+    }
 }

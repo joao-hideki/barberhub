@@ -99,6 +99,11 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
         return livres;
     }
 
+    public Task<Resultado<Agendamento>> Confirmar(int barbeariaId, int agendamentoId) => throw new NotImplementedException();
+    public Task<Resultado<Agendamento>> Concluir(int barbeariaId, int agendamentoId) => throw new NotImplementedException();
+    public Task<Resultado<Agendamento>> Cancelar(int barbeariaId, int agendamentoId) => throw new NotImplementedException();
+    public Task<List<Agendamento>> AgendaDoDia(int barbeariaId, DateOnly data) => throw new NotImplementedException();
+
     private async Task<bool> CabeNoExpediente(int barbeariaId, DateTime inicio, DateTime fim)
     {
         var dia = await db.Expedientes.SingleOrDefaultAsync(h => h.BarbeariaId == barbeariaId && h.DiaSemana == inicio.DayOfWeek);
