@@ -62,6 +62,12 @@ public class CatalogoService(AppDbContext db)
     private Task<Servico?> BuscarServico(int barbeariaId, int servicoId) =>
         db.Servicos.SingleOrDefaultAsync(s => s.Id == servicoId && s.BarbeariaId == barbeariaId);
 
+    public Task<Resultado<Barbeiro>> CadastrarBarbeiro(int barbeariaId, string nome) => throw new NotImplementedException();
+
+    public Task<List<Barbeiro>> ListarBarbeirosAtivos(int barbeariaId) => throw new NotImplementedException();
+
+    public Task<Resultado<Barbeiro>> InativarBarbeiro(int barbeariaId, int barbeiroId) => throw new NotImplementedException();
+
     private static string? ValidarServico(string nome, decimal preco, int duracaoMinutos)
     {
         if (string.IsNullOrWhiteSpace(nome))

@@ -10,3 +10,11 @@ public class Servico
     public int DuracaoMinutos { get; set; }
     public bool Ativo { get; set; } = true;
 }
+
+public class Barbeiro
+{
+    public int Id { get; set; }
+    public int BarbeariaId { get; set; }
+    public string Nome { get; set; } = "";
+    public bool Ativo { get; set; } = true;
+}

@@ -81,4 +81,44 @@ public class CatalogoServiceTests(PostgresFixture banco) : TesteComBanco(banco)
         var atualizado = Assert.Single(await Catalogo.ListarServicosAtivos(barbearia.Id));
         Assert.Equal(("Corte degradê", 50m, 45), (atualizado.Nome, atualizado.Preco, atualizado.DuracaoMinutos));
     }
+
+    [Fact]
+    public async Task Plano_basico_permite_apenas_um_barbeiro()
+    {
+        var barbearia = await CriarBarbearia(Plano.Basico);
+
+        var primeiro = await Catalogo.CadastrarBarbeiro(barbearia.Id, "Zé");
+        var segundo = await Catalogo.CadastrarBarbeiro(barbearia.Id, "Tião");
+
+        Assert.True(primeiro.Sucesso);
+        Assert.False(segundo.Sucesso);
+        Assert.Equal("Seu plano Básico permite até 1 barbeiro(s). Faça upgrade de plano para cadastrar mais.", segundo.Erro);
+        Assert.Single(await Catalogo.ListarBarbeirosAtivos(barbearia.Id));
+    }
+
+    [Fact]
+    public async Task Plano_pro_permite_ate_cinco_barbeiros()
+    {
+        var barbearia = await CriarBarbearia(Plano.Pro);
+        for (var i = 1; i <= 5; i++)
+            Assert.True((await Catalogo.CadastrarBarbeiro(barbearia.Id, $"Barbeiro {i}")).Sucesso);
+
+        var sexto = await Catalogo.CadastrarBarbeiro(barbearia.Id, "Barbeiro 6");
+
+        Assert.False(sexto.Sucesso);
+        Assert.Equal(5, (await Catalogo.ListarBarbeirosAtivos(barbearia.Id)).Count);
+    }
+
+    [Fact]
+    public async Task Barbeiro_inativado_libera_vaga_do_plano()
+    {
+        var barbearia = await CriarBarbearia(Plano.Basico);
+        var ze = (await Catalogo.CadastrarBarbeiro(barbearia.Id, "Zé")).Valor!;
+
+        await Catalogo.InativarBarbeiro(barbearia.Id, ze.Id);
+        var tiao = await Catalogo.CadastrarBarbeiro(barbearia.Id, "Tião");
+
+        Assert.True(tiao.Sucesso);
+        Assert.Equal("Tião", Assert.Single(await Catalogo.ListarBarbeirosAtivos(barbearia.Id)).Nome);
+    }
 }
