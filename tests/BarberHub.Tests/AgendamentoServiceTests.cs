@@ -168,4 +168,31 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
         Assert.False(terceiro.Sucesso);
         Assert.Equal("Você já tem 2 horários em aberto nesta barbearia. Para marcar mais, fale com a barbearia.", terceiro.Erro);
     }
+
+    [Fact]
+    public async Task Servico_ou_barbeiro_inativo_ou_de_outra_barbearia_nao_pode_ser_agendado()
+    {
+        await PrepararBarbearia();
+        var outra = await CriarBarbearia();
+        var barbeiroDeOutra = (await Catalogo.CadastrarBarbeiro(outra.Id, "Intruso")).Valor!;
+        await Catalogo.InativarServico(_barbearia.Id, _corte.Id);
+
+        var servicoInativo = await Agendar(_ze, _corte, Terca.AddHours(10));
+        var barbeiroAlheio = await Agendar(barbeiroDeOutra, _corteEBarba, Terca.AddHours(10));
+
+        Assert.Equal("Serviço ou barbeiro indisponível.", servicoInativo.Erro);
+        Assert.Equal("Serviço ou barbeiro indisponível.", barbeiroAlheio.Erro);
+    }
+
+    [Fact]
+    public async Task Barbearia_com_assinatura_vencida_nao_recebe_agendamentos()
+    {
+        await PrepararBarbearia();            // período grátis válido até 07/12
+        Relogio.Advance(TimeSpan.FromDays(15)); // agora: 08/12
+
+        var resultado = await Agendar(_ze, _corte, new DateTime(2026, 12, 9, 10, 0, 0));
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal("Agenda indisponível: a assinatura desta barbearia está vencida.", resultado.Erro);
+    }
 }
