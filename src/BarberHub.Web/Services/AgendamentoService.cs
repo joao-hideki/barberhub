@@ -122,7 +122,15 @@ public class AgendamentoService(AppDbContext db, TimeProvider relogio)
             .ToListAsync();
     }
 
-    public Task<ResumoMensal> ResumoDoMes(int barbeariaId, DateOnly mes) => throw new NotImplementedException();
+    /// <summary>Faturamento = soma dos atendimentos concluídos no mês, pelo preço gravado no agendamento.</summary>
+    public async Task<ResumoMensal> ResumoDoMes(int barbeariaId, DateOnly mes)
+    {
+        var inicio = new DateTime(mes.Year, mes.Month, 1);
+        var concluidos = db.Agendamentos.Where(a => a.BarbeariaId == barbeariaId
+                                                    && a.Status == StatusAgendamento.Concluido
+                                                    && a.Inicio >= inicio && a.Inicio < inicio.AddMonths(1));
+        return new ResumoMensal(await concluidos.CountAsync(), await concluidos.SumAsync(a => a.Preco));
+    }
 
     private async Task<Resultado<Agendamento>> MudarStatus(int barbeariaId, int agendamentoId, StatusAgendamento novo)
     {
