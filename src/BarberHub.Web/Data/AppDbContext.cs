@@ -9,10 +9,13 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
     public DbSet<Servico> Servicos => Set<Servico>();
     public DbSet<Barbeiro> Barbeiros => Set<Barbeiro>();
     public DbSet<HorarioFuncionamento> Expedientes => Set<HorarioFuncionamento>();
+    public DbSet<Cliente> Clientes => Set<Cliente>();
+    public DbSet<Agendamento> Agendamentos => Set<Agendamento>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Servico>().Property(s => s.Preco).HasPrecision(10, 2);
+        modelBuilder.Entity<Agendamento>().Property(a => a.Preco).HasPrecision(10, 2);
 
         // Datas são gravadas no horário local da barbearia (sem fuso).
         foreach (var propriedade in modelBuilder.Model.GetEntityTypes()
