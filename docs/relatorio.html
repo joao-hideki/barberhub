@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>BarberHub · Relatório do Projeto</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", Arial, sans-serif; color: #1c1917; font-size: 10.5pt; line-height: 1.5; margin: 0; }
+  h1 { font-size: 30pt; margin: 0; letter-spacing: -.5px; }
+  h1 span, .ouro { color: #d97706; }
+  h2 { font-size: 15pt; border-bottom: 2px solid #d97706; padding-bottom: 3px; margin: 22px 0 10px; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; margin: 14px 0 6px; page-break-after: avoid; }
+  p { margin: 6px 0; }
+  ul { margin: 4px 0 8px; padding-left: 20px; }
+  li { margin: 2px 0; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0 12px; font-size: 9.5pt; page-break-inside: avoid; }
+  th, td { border: 1px solid #d6d3d1; padding: 5px 7px; text-align: left; vertical-align: top; }
+  th { background: #f5f5f4; }
+  code { background: #f5f5f4; padding: 0 3px; border-radius: 3px; font-size: 9pt; }
+  .capa { height: 255mm; display: flex; flex-direction: column; justify-content: center; page-break-after: always; }
+  .capa .sub { font-size: 14pt; color: #57534e; margin-top: 8px; }
+  .capa .bloco { margin-top: 40px; border-left: 4px solid #d97706; padding-left: 14px; }
+  .caixa { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 6px; padding: 8px 12px; margin: 8px 0; page-break-inside: avoid; }
+  .diagrama { text-align: center; margin: 10px 0; page-break-inside: avoid; }
+  .quebra { page-break-before: always; }
+  .pequeno { font-size: 9pt; color: #57534e; }
+</style>
+</head>
+<body>
+
+<section class="capa">
+  <h1>&#9986; Barber<span>Hub</span></h1>
+  <div class="sub">SaaS de agendamento online para barbearias</div>
+  <div class="bloco">
+    <p><strong>Trabalho prático: Desenvolvimento e apresentação de um SaaS</strong></p>
+    <p>FATEC · Prof. David Silva · Novembro de 2026</p>
+    <p style="margin-top:18px"><strong>Integrantes</strong></p>
+    <ul>
+      <li>João Hideki</li>
+      <li>[Nome do integrante]</li>
+      <li>[Nome do integrante]</li>
+    </ul>
+    <p style="margin-top:18px"><strong>Repositório:</strong> https://github.com/joao-hideki/barberhub</p>
+  </div>
+</section>
+
+<h2>1. Problema, público-alvo e proposta</h2>
+<h3>Problema</h3>
+<p>
+  A maioria das barbearias pequenas ainda controla os horários em um caderno ou por mensagens de WhatsApp.
+  Isso causa <strong>horários marcados em duplicidade</strong>, clientes que esquecem o horário,
+  tempo perdido respondendo "tem horário amanhã?" no meio do atendimento e <strong>nenhuma visão de quanto a barbearia faturou</strong>.
+</p>
+<h3>Público-alvo</h3>
+<ul>
+  <li><strong>Dono da barbearia</strong> (cliente pagante do SaaS): barbearias pequenas e médias, de 1 a 5 barbeiros.</li>
+  <li><strong>Barbeiros</strong>: consultam a agenda do dia.</li>
+  <li><strong>Clientes da barbearia</strong>: agendam pelo celular, sem precisar criar conta.</li>
+</ul>
+<h3>Proposta (SaaS)</h3>
+<p>
+  O BarberHub é oferecido pela internet como <strong>assinatura mensal</strong>. Cada barbearia cria a própria conta
+  e recebe um <strong>link público de agendamento</strong> (<code>/b/nome-da-barbearia</code>) para divulgar no Instagram,
+  no Google e no WhatsApp. Todas as barbearias usam a mesma aplicação e o mesmo banco, mas cada uma só acessa os próprios dados (<em>multi-tenant</em>).
+</p>
+
+<h3>Principais funcionalidades</h3>
+<table>
+  <tr><th style="width:22%">Funcionalidade</th><th>Descrição</th></tr>
+  <tr><td>Cadastro e login</td><td>O dono cria a barbearia, escolhe o plano e ganha 14 dias grátis. A senha é guardada com hash.</td></tr>
+  <tr><td>Catálogo</td><td>Serviços com <strong>preço e duração</strong> (em blocos de 15 min), barbeiros e expediente por dia da semana.</td></tr>
+  <tr><td>Agendamento público</td><td>O cliente escolhe serviço, barbeiro, dia e um horário livre, informa nome e celular e confere os dados antes de confirmar.</td></tr>
+  <tr><td>Agenda do dia</td><td>Lista de atendimentos com botão de WhatsApp (mensagem pronta) e ações de confirmar, concluir e cancelar.</td></tr>
+  <tr><td>Painel</td><td>Atendimentos do dia, concluídos no mês, faturamento do mês e situação da assinatura.</td></tr>
+  <tr><td>Assinatura</td><td>Escolha do plano e pagamento com cartão por um gateway simulado, com histórico de pagamentos.</td></tr>
+</table>
+
+<h3>Modelo de cobrança</h3>
+<table>
+  <tr><th>Plano</th><th>Preço</th><th>Barbeiros</th><th>Inclui</th></tr>
+  <tr><td>Básico</td><td>R$ 49,90/mês</td><td>1</td><td rowspan="2">Agendamentos ilimitados, página pública, painel, 14 dias grátis sem cartão</td></tr>
+  <tr><td>Pro</td><td>R$ 99,90/mês</td><td>até 5</td></tr>
+</table>
+<p>
+  A cobrança é recorrente no cartão. O sistema bloqueia novos agendamentos quando a assinatura vence
+  e impede trocar para um plano com menos vagas do que os barbeiros ativos.
+  Futuramente, a receita pode crescer com lembretes automáticos por WhatsApp como serviço adicional.
+</p>
+
+<h2 class="quebra">2. Arquitetura</h2>
+<p>
+  O sistema é uma aplicação web <strong>monolítica em camadas</strong>, com renderização no servidor.
+  O navegador recebe HTML pronto, sem uma API separada, o que diminui as peças a manter e é adequado a um MVP.
+</p>
+
+<div class="diagrama">
+<svg width="640" height="360" viewBox="0 0 640 360" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial" font-size="12">
+  <defs>
+    <marker id="seta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#57534e"/></marker>
+  </defs>
+  <!-- usuarios -->
+  <rect x="10" y="20" width="140" height="56" rx="8" fill="#f5f5f4" stroke="#a8a29e"/>
+  <text x="80" y="44" text-anchor="middle" font-weight="bold">Dono / barbeiro</text>
+  <text x="80" y="62" text-anchor="middle" fill="#57534e">navegador · /Painel</text>
+  <rect x="10" y="100" width="140" height="56" rx="8" fill="#f5f5f4" stroke="#a8a29e"/>
+  <text x="80" y="124" text-anchor="middle" font-weight="bold">Cliente</text>
+  <text x="80" y="142" text-anchor="middle" fill="#57534e">celular · /b/{slug}</text>
+  <!-- container web -->
+  <rect x="200" y="8" width="300" height="250" rx="10" fill="#fffbeb" stroke="#d97706" stroke-dasharray="5 3"/>
+  <text x="350" y="26" text-anchor="middle" fill="#b45309" font-weight="bold">Container "web" (ASP.NET Core .NET 10)</text>
+  <rect x="220" y="38" width="260" height="52" rx="6" fill="#fff" stroke="#1c1917"/>
+  <text x="350" y="58" text-anchor="middle" font-weight="bold">Interface · Razor Pages</text>
+  <text x="350" y="76" text-anchor="middle" fill="#57534e">telas .cshtml + PageModel, login por cookie</text>
+  <rect x="220" y="112" width="260" height="66" rx="6" fill="#fff" stroke="#1c1917"/>
+  <text x="350" y="132" text-anchor="middle" font-weight="bold">Lógica · Serviços de domínio</text>
+  <text x="350" y="150" text-anchor="middle" fill="#57534e">Cadastro · Catálogo · Agendamento</text>
+  <text x="350" y="166" text-anchor="middle" fill="#57534e">Assinatura  (70 testes automatizados)</text>
+  <rect x="220" y="198" width="260" height="46" rx="6" fill="#fff" stroke="#1c1917"/>
+  <text x="350" y="218" text-anchor="middle" font-weight="bold">Acesso a dados · EF Core</text>
+  <text x="350" y="235" text-anchor="middle" fill="#57534e">AppDbContext + migrations</text>
+  <!-- gateway -->
+  <rect x="512" y="112" width="124" height="66" rx="8" fill="#f5f5f4" stroke="#a8a29e"/>
+  <text x="574" y="134" text-anchor="middle" font-weight="bold">Gateway</text>
+  <text x="574" y="150" text-anchor="middle" fill="#57534e" font-size="11">IGatewayPagamento</text>
+  <text x="574" y="166" text-anchor="middle" fill="#57534e">(simulado)</text>
+  <!-- banco -->
+  <rect x="250" y="292" width="200" height="56" rx="8" fill="#e0f2fe" stroke="#0369a1"/>
+  <text x="350" y="314" text-anchor="middle" font-weight="bold">Container "db" · PostgreSQL 17</text>
+  <text x="350" y="332" text-anchor="middle" fill="#075985">tabelas por barbearia (BarbeariaId)</text>
+  <!-- setas -->
+  <line x1="150" y1="48" x2="218" y2="60" stroke="#57534e" marker-end="url(#seta)"/>
+  <line x1="150" y1="128" x2="218" y2="74" stroke="#57534e" marker-end="url(#seta)"/>
+  <text x="176" y="98" text-anchor="middle" fill="#57534e" font-size="10">HTTP</text>
+  <line x1="350" y1="90" x2="350" y2="110" stroke="#57534e" marker-end="url(#seta)"/>
+  <line x1="350" y1="178" x2="350" y2="196" stroke="#57534e" marker-end="url(#seta)"/>
+  <line x1="480" y1="145" x2="510" y2="145" stroke="#57534e" marker-end="url(#seta)"/>
+  <line x1="350" y1="244" x2="350" y2="290" stroke="#57534e" marker-end="url(#seta)"/>
+  <text x="362" y="272" fill="#57534e" font-size="10">SQL (Npgsql)</text>
+</svg>
+<div class="pequeno">Figura 1: camadas do BarberHub e como se comunicam. Tudo sobe com <code>docker compose up</code>.</div>
+</div>
+
+<h3>Interface</h3>
+<p>
+  <strong>ASP.NET Core Razor Pages</strong> com Bootstrap 5. Cada tela tem um arquivo <code>.cshtml</code> (HTML com C#)
+  e um <code>PageModel</code> que trata o GET e o POST do formulário. As telas do dono ficam em <code>/Painel</code>,
+  protegidas por login (cookie). A página do cliente, <code>/b/{slug}</code>, é pública. Formulários usam token antifalsificação (CSRF).
+</p>
+<h3>Lógica da aplicação</h3>
+<p>
+  As regras ficam em <strong>serviços de domínio</strong> (<code>CadastroService</code>, <code>CatalogoService</code>,
+  <code>AgendamentoService</code>, <code>AssinaturaService</code>) que recebem as dependências por
+  <strong>injeção de dependência</strong>: banco, relógio (<code>TimeProvider</code>) e gateway. As telas apenas chamam esses serviços.
+  Assim, as regras são testadas sem a interface. Cada operação devolve um <code>Resultado</code> (sucesso, ou erro com mensagem para o usuário).
+</p>
+<h3>Armazenamento dos dados</h3>
+<p>
+  <strong>PostgreSQL 17</strong> acessado pelo <strong>Entity Framework Core 10</strong> (ORM). O esquema é versionado por
+  <em>migrations</em> e aplicado automaticamente quando o app sobe. Toda tabela de negócio tem <code>BarbeariaId</code>, e as
+  consultas sempre filtram por ele (isolamento multi-tenant). Índices únicos garantem e-mail e endereço público sem repetição.
+  O preço do serviço é <strong>copiado para o agendamento</strong>, preservando o histórico.
+</p>
+<table>
+  <tr><th>Tabela</th><th>Conteúdo</th></tr>
+  <tr><td>Barbearias</td><td>tenant do SaaS: nome, slug, e-mail, hash da senha, plano, validade da assinatura</td></tr>
+  <tr><td>Servicos / Barbeiros / Expedientes</td><td>catálogo e horário de funcionamento de cada barbearia</td></tr>
+  <tr><td>Clientes</td><td>nome e celular normalizado (único por barbearia)</td></tr>
+  <tr><td>Agendamentos</td><td>barbeiro, serviço, cliente, início, fim, preço da época e status</td></tr>
+  <tr><td>Pagamentos</td><td>histórico das cobranças da assinatura (aprovadas e recusadas)</td></tr>
+</table>
+
+<h3>Tecnologias e justificativa</h3>
+<table>
+  <tr><th style="width:28%">Tecnologia</th><th>Por que foi escolhida</th></tr>
+  <tr><td>C# / .NET 10 (LTS)</td><td>Linguagem que o grupo domina; versão com suporte de longo prazo.</td></tr>
+  <tr><td>Razor Pages</td><td>Renderização no servidor e acesso direto aos serviços, sem API separada. Menos código para um MVP.</td></tr>
+  <tr><td>PostgreSQL + EF Core</td><td>Banco relacional robusto e gratuito; o ORM e as migrations evitam SQL manual e versionam o esquema.</td></tr>
+  <tr><td>Docker Compose</td><td>Qualquer pessoa sobe banco e aplicação com um comando, sem instalar PostgreSQL nem .NET.</td></tr>
+  <tr><td>xUnit + Testcontainers</td><td>Testes com um PostgreSQL real e descartável, iguais ao ambiente de produção.</td></tr>
+</table>
+
+<h2 class="quebra">3. Técnicas aplicadas</h2>
+<table>
+  <tr><th style="width:26%">Técnica</th><th>Como aparece no projeto</th></tr>
+  <tr><td><strong>TDD</strong> (metodologia)</td><td>Cada regra nasceu de um teste que falhava (<em>red</em>), seguido do código mínimo para passar (<em>green</em>). Foram 23 ciclos com commit separado para cada etapa, verificáveis com <code>git log</code>. Ao todo são 70 testes.</td></tr>
+  <tr><td>Testes de integração com banco real</td><td>Testcontainers sobe um PostgreSQL no Docker, e cada teste usa um banco novo. Só o gateway externo é substituído por um dublê.</td></tr>
+  <tr><td>Relógio controlado</td><td><code>TimeProvider</code> injetado: os testes fixam "segunda, 23/11/2026, 09:00" e avançam o tempo para testar o fim do período grátis.</td></tr>
+  <tr><td>Arquitetura em camadas</td><td>Interface (Pages), lógica (Services/Domain) e dados (Data) separadas.</td></tr>
+  <tr><td>Injeção de dependência e interfaces</td><td><code>IGatewayPagamento</code>: para trocar o simulador por um gateway real, basta mudar uma linha do <code>Program.cs</code>.</td></tr>
+  <tr><td>Multi-tenant</td><td><code>BarbeariaId</code> do usuário logado vem do cookie, e todos os serviços filtram por ele. Há testes garantindo que uma barbearia não altera dados de outra.</td></tr>
+  <tr><td>Segurança</td><td>Senha com hash PBKDF2 e salt, cookie de autenticação, token CSRF e nenhuma credencial no repositório (<code>.env</code> ignorado pelo git).</td></tr>
+  <tr><td>ORM e migrations</td><td>EF Core gera e aplica o esquema do banco automaticamente.</td></tr>
+  <tr><td>Conteinerização</td><td>Dockerfile multi-stage e docker-compose com <em>healthcheck</em> do banco.</td></tr>
+</table>
+
+<h3>Fluxo completo demonstrado</h3>
+<ol>
+  <li>O dono cria a barbearia no plano Básico e cai no painel com 14 dias grátis.</li>
+  <li>Cadastra o serviço "Corte" (R$ 45,50, 45 min) e um barbeiro. O segundo barbeiro é bloqueado pelo plano.</li>
+  <li>O cliente abre o link público, escolhe serviço, barbeiro e dia e vê só os horários que cabem. Informa um celular inválido (recusado), corrige, confere e confirma.</li>
+  <li>O horário some da lista. O dono o vê na agenda, chama o cliente no WhatsApp, confirma e conclui. O faturamento do mês é atualizado.</li>
+  <li>O dono paga a assinatura: o cartão final 0000 é recusado e o 4111 é aprovado. O plano vira Pro e o segundo barbeiro é liberado.</li>
+</ol>
+<p class="pequeno">Esse fluxo também foi automatizado como teste ponta a ponta via HTTP durante o desenvolvimento.</p>
+
+<h2>4. Uso de Inteligência Artificial</h2>
+<h3>Ferramentas utilizadas</h3>
+<ul>
+  <li><strong>Claude Code</strong> (agente de programação da Anthropic, modelo <strong>Claude Opus 5.5</strong>), usado no terminal dentro da pasta do projeto.</li>
+</ul>
+<h3>Etapas em que ajudou</h3>
+<table>
+  <tr><th style="width:24%">Etapa</th><th>Contribuição</th></tr>
+  <tr><td>Entendimento e planejamento</td><td>Organizou os requisitos do enunciado em entregáveis, propôs o tema e o escopo do MVP e discutiu decisões com o grupo (stack, cadastro do cliente, gateway).</td></tr>
+  <tr><td>Programação (TDD)</td><td>Escreveu os testes de cada regra antes do código e depois a implementação mínima, com commits <em>red/green</em>.</td></tr>
+  <tr><td>Testes</td><td>Configurou Testcontainers e o relógio falso e criou um teste ponta a ponta via HTTP do fluxo completo.</td></tr>
+  <tr><td>Solução de problemas</td><td>Diagnosticou incompatibilidades de versão e erros de layout (conferidos por screenshots).</td></tr>
+  <tr><td>Documentação</td><td>Rascunho do README, deste relatório e do roteiro da apresentação, revisados pelo grupo.</td></tr>
+</table>
+
+<h3>Exemplos concretos</h3>
+<div class="caixa">
+  <strong>1. Gateway de pagamento.</strong> O grupo perguntou se dava para integrar um gateway real. A IA ponderou que isso exigiria
+  conta e <strong>chaves de API</strong> (proibidas no repositório pelo enunciado) e um <em>webhook</em> com URL pública
+  (a demonstração é local), além do risco de falhar ao vivo. Ela propôs a interface <code>IGatewayPagamento</code> com
+  um <code>GatewayPagamentoSimulado</code> (cartão final 0000 é recusado). A integração real ficou como próximo passo, que exige trocar só uma linha.
+</div>
+<div class="caixa">
+  <strong>2. Risco de telefone errado.</strong> O grupo apontou que o cliente poderia digitar o celular errado. A IA sugeriu proteção em camadas,
+  que viraram regras testadas: normalizar e validar o celular (DDD existente e 9º dígito), mostrar uma tela de conferência
+  com o número formatado, confirmar pela barbearia com um link do WhatsApp (sem custo de API) e limitar a 2 horários em aberto por celular, contra trote.
+</div>
+<div class="caixa">
+  <strong>3. Solução de problema.</strong> Ao instalar os pacotes, o NuGet trouxe o EF Core 11, que exige o .NET 11 (não instalado).
+  A IA identificou o erro <code>NU1202</code> e fixou as versões compatíveis com o .NET 10. Durante a revisão visual,
+  ela também encontrou um card esticado na página pública e corrigiu a regra de CSS responsável.
+</div>
+<p class="pequeno">
+  Todo o código gerado com auxílio de IA foi lido e revisado pelo grupo, que é responsável por ele e sabe explicá-lo.
+</p>
+
+<h2>5. Dificuldades e próximos passos</h2>
+<h3>Dificuldades</h3>
+<ul>
+  <li>Definir o escopo possível dentro do prazo sem perder o fluxo completo (cadastro → agenda → cobrança).</li>
+  <li>Regras de horário: sobreposição de intervalos, serviço que precisa caber inteiro no expediente e fuso horário.</li>
+  <li>Disciplina do TDD: resistir a escrever o código antes do teste.</li>
+  <li>Cobrança sem gateway real e sem expor credenciais.</li>
+</ul>
+<h3>Próximos passos</h3>
+<ul>
+  <li>Integração com gateway real (Mercado Pago, Asaas ou Stripe) e cobrança recorrente automática.</li>
+  <li>Confirmação por código (OTP) via WhatsApp/SMS e lembrete automático na véspera.</li>
+  <li>Agenda individual por barbeiro (folgas e intervalo de almoço) e cancelamento pelo próprio cliente.</li>
+  <li>Publicação em nuvem com domínio próprio e HTTPS.</li>
+</ul>
+
+</body>
+</html>
