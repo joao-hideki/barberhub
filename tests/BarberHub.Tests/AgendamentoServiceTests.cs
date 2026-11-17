@@ -120,4 +120,52 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
         Assert.False(resultado.Sucesso);
         Assert.Equal("Escolha um horário em blocos de 15 minutos (ex.: 10:00, 10:15).", resultado.Erro);
     }
+
+    [Fact]
+    public async Task Telefone_invalido_impede_o_agendamento()
+    {
+        await PrepararBarbearia();
+
+        var resultado = await Agendar(_ze, _corte, Terca.AddHours(10), telefone: "3265-4321");
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal(Telefone.MensagemInvalido, resultado.Erro);
+    }
+
+    [Fact]
+    public async Task Mesmo_celular_em_formatos_diferentes_e_o_mesmo_cliente()
+    {
+        await PrepararBarbearia();
+
+        var primeiro = await Agendar(_ze, _corte, Terca.AddHours(10), telefone: "(11) 98765-4321", nome: "Carlos");
+        var segundo = await Agendar(_ze, _corte, Terca.AddHours(14), telefone: "+55 11 98765 4321", nome: "Carlos Silva");
+
+        Assert.Equal(primeiro.Valor!.ClienteId, segundo.Valor!.ClienteId);
+        Assert.Equal("11987654321", segundo.Valor.Cliente.Telefone);
+    }
+
+    [Fact]
+    public async Task Cliente_nao_marca_dois_horarios_ao_mesmo_tempo_nem_com_barbeiros_diferentes()
+    {
+        await PrepararBarbearia();
+        await Agendar(_ze, _corteEBarba, Terca.AddHours(10));
+
+        var resultado = await Agendar(_tiao, _corte, Terca.AddHours(10).AddMinutes(30));
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal("Você já tem um horário marcado neste período.", resultado.Erro);
+    }
+
+    [Fact]
+    public async Task Celular_pode_ter_no_maximo_dois_horarios_em_aberto_na_barbearia()
+    {
+        await PrepararBarbearia();
+        await Agendar(_ze, _corte, Terca.AddHours(10));
+        await Agendar(_ze, _corte, Terca.AddHours(11));
+
+        var terceiro = await Agendar(_ze, _corte, Terca.AddHours(12));
+
+        Assert.False(terceiro.Sucesso);
+        Assert.Equal("Você já tem 2 horários em aberto nesta barbearia. Para marcar mais, fale com a barbearia.", terceiro.Erro);
+    }
 }
