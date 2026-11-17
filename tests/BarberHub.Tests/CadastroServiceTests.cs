@@ -62,4 +62,26 @@ public class CadastroServiceTests(PostgresFixture banco) : TesteComBanco(banco)
         Assert.False(resultado.Sucesso);
         Assert.Equal(erro, resultado.Erro);
     }
+
+    [Fact]
+    public async Task Dono_entra_com_email_e_senha_cadastrados()
+    {
+        var cadastro = await Servico.CadastrarBarbearia(
+            new NovaBarbearia("Corte Fino", "dono@corte.com", "segredo123", Plano.Basico));
+
+        var logado = await Servico.Autenticar("Dono@Corte.com", "segredo123");
+
+        Assert.NotNull(logado);
+        Assert.Equal(cadastro.Valor!.Id, logado.Id);
+    }
+
+    [Theory]
+    [InlineData("dono@corte.com", "senha-errada")]
+    [InlineData("ninguem@corte.com", "segredo123")]
+    public async Task Senha_errada_ou_email_desconhecido_nao_entra(string email, string senha)
+    {
+        await Servico.CadastrarBarbearia(new NovaBarbearia("Corte Fino", "dono@corte.com", "segredo123", Plano.Basico));
+
+        Assert.Null(await Servico.Autenticar(email, senha));
+    }
 }

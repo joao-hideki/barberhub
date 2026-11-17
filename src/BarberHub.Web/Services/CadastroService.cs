@@ -57,4 +57,6 @@ public class CadastroService(AppDbContext db, TimeProvider relogio)
             slug = $"{baseSlug}-{n}";
         return slug;
     }
+
+    public Task<Barbearia?> Autenticar(string email, string senha) => throw new NotImplementedException();
 }
