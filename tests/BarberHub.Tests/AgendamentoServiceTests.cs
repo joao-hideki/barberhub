@@ -74,4 +74,50 @@ public class AgendamentoServiceTests(PostgresFixture banco) : TesteComBanco(banc
         Assert.True(logoDepois.Sucesso, logoDepois.Erro);
         Assert.True(outroBarbeiro.Sucesso, outroBarbeiro.Erro);
     }
+
+    [Theory]
+    [InlineData("2026-11-24 18:30")] // corte+barba terminaria 19h30, depois do fechamento (19h)
+    [InlineData("2026-11-24 08:30")] // antes de abrir
+    [InlineData("2026-11-29 10:00")] // domingo: fechado
+    public async Task Atendimento_precisa_caber_inteiro_no_expediente(string inicio)
+    {
+        await PrepararBarbearia();
+
+        var resultado = await Agendar(_ze, _corteEBarba, DateTime.Parse(inicio));
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal("Horário fora do expediente da barbearia.", resultado.Erro);
+    }
+
+    [Fact]
+    public async Task Atendimento_que_termina_exatamente_no_fechamento_e_aceito()
+    {
+        await PrepararBarbearia();
+
+        var resultado = await Agendar(_ze, _corteEBarba, Terca.AddHours(18));
+
+        Assert.True(resultado.Sucesso, resultado.Erro);
+    }
+
+    [Fact]
+    public async Task Nao_agenda_no_passado()
+    {
+        await PrepararBarbearia(); // agora: segunda 23/11, 09:00
+
+        var resultado = await Agendar(_ze, _corte, new DateTime(2026, 11, 23, 8, 45, 0));
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal("Não é possível agendar em um horário que já passou.", resultado.Erro);
+    }
+
+    [Fact]
+    public async Task Horario_precisa_estar_em_blocos_de_15_minutos()
+    {
+        await PrepararBarbearia();
+
+        var resultado = await Agendar(_ze, _corte, Terca.AddHours(10).AddMinutes(10));
+
+        Assert.False(resultado.Sucesso);
+        Assert.Equal("Escolha um horário em blocos de 15 minutos (ex.: 10:00, 10:15).", resultado.Erro);
+    }
 }
