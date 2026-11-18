@@ -2,12 +2,15 @@
 @model BarberHub.Web.Pages.Painel.AgendaModel
 @{ ViewData["Title"] = "Agenda"; }
 
-<div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
-    <h2 class="mb-0">Agenda · @Model.Dia.ToString("dddd, dd/MM")</h2>
+<div class="bh-secao-titulo">
+    <div>
+        <h2>Agenda</h2>
+        <p>@Formulario.DiaPorExtenso(Model.Dia)</p>
+    </div>
     <form method="get" class="d-flex gap-2">
-        <a class="btn btn-outline-secondary" href="?data=@Model.Dia.AddDays(-1).ToString("yyyy-MM-dd")" aria-label="Dia anterior">&larr;</a>
-        <input type="date" name="data" class="form-control" value="@Model.Dia.ToString("yyyy-MM-dd")" onchange="this.form.submit()" />
-        <a class="btn btn-outline-secondary" href="?data=@Model.Dia.AddDays(1).ToString("yyyy-MM-dd")" aria-label="Próximo dia">&rarr;</a>
+        <a class="btn btn-linha" href="?data=@Model.Dia.AddDays(-1).ToString("yyyy-MM-dd")" aria-label="Dia anterior">&lsaquo;</a>
+        <input type="date" name="data" class="form-control" value="@Model.Dia.ToString("yyyy-MM-dd")" onchange="this.form.submit()" aria-label="Escolher dia" />
+        <a class="btn btn-linha" href="?data=@Model.Dia.AddDays(1).ToString("yyyy-MM-dd")" aria-label="Próximo dia">&rsaquo;</a>
     </form>
 </div>
 
@@ -19,20 +22,19 @@
     else
     {
         <div class="table-responsive">
-            <table class="table mb-0">
+            <table class="table">
                 <thead>
-                    <tr><th>Horário</th><th>Cliente</th><th>Serviço</th><th>Barbeiro</th><th>Valor</th><th>Status</th><th class="text-end">Ações</th></tr>
+                    <tr><th>Horário</th><th>Cliente</th><th>Serviço</th><th>Barbeiro</th><th>Status</th><th class="text-end"><span class="visually-hidden">Ações</span></th></tr>
                 </thead>
                 <tbody>
                     @foreach (var a in Model.Atendimentos)
                     {
                         var aberto = a.Status is StatusAgendamento.Agendado or StatusAgendamento.Confirmado;
                         <tr class="@(a.Status == StatusAgendamento.Cancelado ? "cancelado" : "")">
-                            <td class="fw-bold">@a.Inicio.ToString("HH:mm")–@a.Fim.ToString("HH:mm")</td>
-                            <td>@a.Cliente.Nome<br /><small class="text-muted">@Telefone.Formatar(a.Cliente.Telefone)</small></td>
-                            <td>@a.Servico.Nome</td>
+                            <td class="bh-hora">@a.Inicio.ToString("HH:mm")<small>até @a.Fim.ToString("HH:mm")</small></td>
+                            <td><span class="fw-semibold">@a.Cliente.Nome</span><br /><small class="text-muted">@Telefone.Formatar(a.Cliente.Telefone)</small></td>
+                            <td>@a.Servico.Nome<br /><small class="text-muted">@Formulario.Moeda(a.Preco)</small></td>
                             <td>@a.Barbeiro.Nome</td>
-                            <td>@Formulario.Moeda(a.Preco)</td>
                             <td><span class="badge-status status-@a.Status">@a.Status.Rotulo()</span></td>
                             <td class="text-end">
                                 @if (aberto)
@@ -42,11 +44,11 @@
                                         <input type="hidden" name="Data" value="@Model.Dia.ToString("yyyy-MM-dd")" />
                                         @if (a.Status == StatusAgendamento.Agendado)
                                         {
-                                            <a class="btn btn-sm btn-success" href="@Model.LinkWhatsApp(a)" target="_blank" rel="noopener">WhatsApp</a>
-                                            <button class="btn btn-sm btn-outline-success" asp-page-handler="Confirmar">Confirmar</button>
+                                            <a class="btn btn-sm btn-whats" href="@Model.LinkWhatsApp(a)" target="_blank" rel="noopener">WhatsApp</a>
+                                            <button class="btn btn-sm btn-linha" asp-page-handler="Confirmar">Confirmar</button>
                                         }
-                                        <button class="btn btn-sm btn-outline-dark" asp-page-handler="Concluir">Concluir</button>
-                                        <button class="btn btn-sm btn-outline-danger" asp-page-handler="Cancelar" onclick="return confirm('Cancelar este atendimento?')">Cancelar</button>
+                                        <button class="btn btn-sm btn-verde" asp-page-handler="Concluir">Concluir</button>
+                                        <button class="btn btn-sm btn-perigo" asp-page-handler="Cancelar" onclick="return confirm('Cancelar este atendimento?')">Cancelar</button>
                                     </form>
                                 }
                             </td>

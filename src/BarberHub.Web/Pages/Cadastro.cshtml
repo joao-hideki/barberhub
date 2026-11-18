@@ -2,42 +2,44 @@
 @model CadastroModel
 @{ ViewData["Title"] = "Criar conta"; }
 
-<div class="row justify-content-center">
-    <div class="col-md-7 col-lg-5">
-        <div class="bh-card">
-            <h3>Crie sua barbearia</h3>
-            <p class="text-muted">14 dias grátis. Sem cartão de crédito.</p>
-            @if (Model.Erro is not null)
-            {
-                <div class="alert alert-danger">@Model.Erro</div>
-            }
-            <form method="post">
-                <div class="mb-3">
-                    <label class="form-label" for="Nome">Nome da barbearia</label>
-                    <input class="form-control" asp-for="Nome" required />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="Email">E-mail</label>
-                    <input class="form-control" asp-for="Email" type="email" required />
-                </div>
-                <div class="mb-3">
-                    <label class="form-label" for="Senha">Senha (mínimo 6 caracteres)</label>
-                    <input class="form-control" asp-for="Senha" type="password" required />
-                </div>
-                <div class="mb-3">
-                    <div class="form-label">Plano</div>
-                    @foreach (var plano in Planos.Todos)
-                    {
-                        <div class="form-check">
-                            <input class="form-check-input" type="radio" asp-for="Plano" value="@plano.Plano" id="plano-@plano.Plano" />
-                            <label class="form-check-label" for="plano-@plano.Plano">
-                                <strong>@plano.Nome</strong>: @Formulario.Moeda(plano.PrecoMensal)/mês, até @plano.LimiteBarbeiros barbeiro(s)
-                            </label>
+<div class="bh-acesso">
+    <h1>Crie sua barbearia</h1>
+    <p>14 dias grátis, sem cartão. Em seguida você cadastra serviços e barbeiros.</p>
+    <div class="bh-card">
+        @if (Model.Erro is not null)
+        {
+            <div class="alert alert-danger">@Model.Erro</div>
+        }
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label" for="Nome">Nome da barbearia</label>
+                <input class="form-control" asp-for="Nome" placeholder="Ex.: Barbearia do Zé" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="Email">E-mail</label>
+                <input class="form-control" asp-for="Email" type="email" autocomplete="email" required />
+            </div>
+            <div class="mb-3">
+                <label class="form-label" for="Senha">Senha</label>
+                <input class="form-control" asp-for="Senha" type="password" autocomplete="new-password" minlength="6" required />
+                <div class="form-text">Mínimo de 6 caracteres.</div>
+            </div>
+            <fieldset class="mb-4">
+                <legend class="form-label">Plano</legend>
+                @foreach (var plano in Planos.Todos)
+                {
+                    <label class="bh-opcao-plano" for="plano-@plano.Plano">
+                        <div>
+                            <input class="form-check-input me-2" type="radio" asp-for="Plano" value="@plano.Plano" id="plano-@plano.Plano" />
+                            <strong>@plano.Nome</strong>
+                            <span>, @(plano.LimiteBarbeiros == 1 ? "1 barbeiro" : $"até {plano.LimiteBarbeiros} barbeiros")</span>
                         </div>
-                    }
-                </div>
-                <button class="btn btn-bh w-100">Criar conta grátis</button>
-            </form>
-        </div>
+                        <strong>@Formulario.Moeda(plano.PrecoMensal)/mês</strong>
+                    </label>
+                }
+            </fieldset>
+            <button class="btn btn-bh btn-lg w-100">Criar conta grátis</button>
+        </form>
     </div>
+    <p class="text-center mt-3">Já tem conta? <a asp-page="/Entrar">Entrar</a></p>
 </div>

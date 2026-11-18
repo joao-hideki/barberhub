@@ -1,40 +1,271 @@
+/* BarberHub: verde-garrafa da cadeira de couro, azulejo claro, latão e o vermelho do poste. */
 :root {
-  --bh-escuro: #1c1917;
-  --bh-ouro: #d97706;
-  --bh-fundo: #fafaf9;
+  --verde: #163a30;
+  --verde-2: #215044;
+  --verde-claro: #dfe8e3;
+  --azulejo: #eef1ec;
+  --superficie: #ffffff;
+  --tinta: #17201d;
+  --cinza: #5b6863;
+  --linha: #d3dbd6;
+  --latao: #c9a04a;
+  --latao-escuro: #a8822f;
+  --poste: #b3261e;
+
+  --fonte-letreiro: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --fonte-texto: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --bs-body-font-family: var(--fonte-texto);
+  --bs-body-color: var(--tinta);
+  --bs-body-bg: var(--azulejo);
+  --bs-secondary-color: var(--cinza);
+  --bs-border-color: var(--linha);
+  --bs-link-color-rgb: 33, 80, 68;
+  --bs-link-hover-color-rgb: 22, 58, 48;
+  --bs-focus-ring-color: rgba(201, 160, 74, .45);
 }
 
-html { font-size: 15px; }
-body { background: var(--bh-fundo); color: var(--bh-escuro); min-height: 100vh; display: flex; flex-direction: column; }
+html { font-size: 16px; }
+body { background: var(--azulejo); color: var(--tinta); min-height: 100vh; display: flex; flex-direction: column; line-height: 1.55; }
 main { flex: 1; }
+a { text-underline-offset: 3px; }
 
-.bh-nav { background: var(--bh-escuro); }
-.bh-logo { font-weight: 800; letter-spacing: .5px; }
-.bh-logo span { color: var(--bh-ouro); }
-.btn-bh { background: var(--bh-ouro); color: #fff; border: none; font-weight: 600; }
-.btn-bh:hover, .btn-bh:focus { background: #b45309; color: #fff; }
-.bh-footer { background: var(--bh-escuro); color: #a8a29e; padding: 1rem 0; font-size: .85rem; }
+h1, h2, h3, h4, .bh-letreiro {
+  font-family: var(--fonte-letreiro);
+  font-weight: 800;
+  letter-spacing: .005em;
+  line-height: 1.02;
+}
+h2 { font-size: 2.4rem; }
+h5 { font-size: 1.05rem; font-weight: 700; }
+.text-muted { color: var(--cinza) !important; }
 
-.bh-hero { background: linear-gradient(135deg, #1c1917 0%, #44403c 100%); color: #fff; border-radius: 1rem; padding: 3rem 2rem; }
-.bh-hero h1 { font-weight: 800; }
-.bh-hero .destaque { color: var(--bh-ouro); }
+:focus-visible { outline: 3px solid var(--latao); outline-offset: 2px; }
 
-.bh-card { background: #fff; border: 1px solid #e7e5e4; border-radius: .75rem; padding: 1.25rem; }
-.bh-kpi { font-size: 1.8rem; font-weight: 800; }
-.bh-plano.destaque { border: 2px solid var(--bh-ouro); }
-.bh-preco { font-size: 2rem; font-weight: 800; }
+/* ---------- Marca ---------- */
+.bh-marca { display: inline-flex; align-items: center; gap: .55rem; text-decoration: none; color: inherit; }
+.bh-marca:hover { color: inherit; }
+.bh-marca-nome { font-family: var(--fonte-letreiro); font-weight: 800; font-size: 1.65rem; letter-spacing: .01em; line-height: 1; }
+.bh-poste-mini { width: 14px; height: 30px; border-radius: 7px; border: 2px solid currentColor; overflow: hidden; flex: none;
+  background: repeating-linear-gradient(-45deg, var(--poste) 0 5px, #fff 5px 10px, var(--verde-2) 10px 15px, #fff 15px 20px); }
 
-.bh-slots { display: flex; flex-wrap: wrap; gap: .5rem; }
+/* ---------- Botões e formulários ---------- */
+.btn { border-radius: 6px; font-weight: 600; padding: .55rem 1.1rem; }
+.btn-sm { padding: .3rem .7rem; font-size: .85rem; }
+.btn-lg { padding: .8rem 1.5rem; font-size: 1.05rem; }
+.btn-bh { background: var(--latao); color: var(--tinta); border: 1px solid var(--latao-escuro); }
+.btn-bh:hover, .btn-bh:focus { background: var(--latao-escuro); border-color: var(--latao-escuro); color: var(--tinta); }
+.btn-verde { background: var(--verde); color: #fff; border: 1px solid var(--verde); }
+.btn-verde:hover, .btn-verde:focus { background: var(--verde-2); color: #fff; }
+.btn-linha { background: transparent; color: var(--tinta); border: 1px solid var(--linha); }
+.btn-linha:hover { border-color: var(--tinta); color: var(--tinta); }
+.btn-perigo { background: transparent; color: var(--poste); border: 1px solid transparent; }
+.btn-perigo:hover { background: #fbeae8; color: var(--poste); }
+.btn-whats { background: #1f8f4e; color: #fff; border: 1px solid #1f8f4e; }
+.btn-whats:hover { background: #18733e; color: #fff; }
+
+.form-control, .form-select { border-radius: 6px; border-color: var(--linha); padding: .6rem .8rem; background-color: #fff; }
+.form-control:focus, .form-select:focus { border-color: var(--latao); box-shadow: 0 0 0 .2rem rgba(201, 160, 74, .3); }
+.form-label { font-weight: 600; font-size: .92rem; margin-bottom: .3rem; }
+.form-check-input:checked { background-color: var(--verde); border-color: var(--verde); }
+
+.alert { border-radius: 8px; border-width: 0 0 0 4px; }
+.alert-success { background: var(--verde-claro); color: var(--verde); border-color: var(--verde-2); }
+.alert-danger { background: #fbeae8; color: #7d1a14; border-color: var(--poste); }
+.alert-warning { background: #f8f0dc; color: #5c4513; border-color: var(--latao); }
+.alert-info { background: var(--verde-claro); color: var(--verde); border-color: var(--verde-2); }
+
+/* ---------- Superfícies ---------- */
+.bh-card { background: var(--superficie); border: 1px solid var(--linha); border-radius: 10px; padding: 1.5rem; }
+.bh-secao-titulo { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 1rem; margin-bottom: 1.5rem; }
+.bh-secao-titulo h2 { margin: 0; }
+.bh-secao-titulo p { margin: .35rem 0 0; color: var(--cinza); max-width: 62ch; }
+
+.table { --bs-table-bg: transparent; margin: 0; }
+.table td, .table th { vertical-align: middle; padding: .85rem .6rem; border-color: var(--linha); }
+.table thead th { font-size: .82rem; font-weight: 600; color: var(--cinza); border-bottom-width: 1px; }
+.table tbody tr:last-child td { border-bottom: 0; }
+.bh-hora { font-family: var(--fonte-letreiro); font-weight: 800; font-size: 1.45rem; line-height: 1; white-space: nowrap; }
+.bh-hora small { font-family: var(--fonte-texto); font-weight: 500; font-size: .78rem; color: var(--cinza); display: block; margin-top: .2rem; }
+
+.badge-status { display: inline-flex; align-items: center; gap: .4rem; font-size: .85rem; font-weight: 600; white-space: nowrap; }
+.badge-status::before { content: ""; width: .55rem; height: .55rem; border-radius: 50%; background: currentColor; }
+.status-Agendado { color: #8a6a1f; }
+.status-Confirmado { color: var(--verde-2); }
+.status-Concluido { color: var(--cinza); }
+.status-Cancelado { color: var(--poste); }
+tr.cancelado td { opacity: .5; }
+tr.cancelado .bh-hora { text-decoration: line-through; }
+
+/* ---------- Site público: cabeçalho e rodapé ---------- */
+.bh-topo { background: var(--azulejo); border-bottom: 1px solid var(--linha); }
+.bh-topo .container { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-top: .85rem; padding-bottom: .85rem; }
+.bh-topo nav { display: flex; align-items: center; gap: 1.25rem; }
+.bh-topo nav a:not(.btn) { color: var(--tinta); text-decoration: none; font-weight: 600; }
+.bh-topo nav a:not(.btn):hover { text-decoration: underline; }
+.bh-rodape { border-top: 1px solid var(--linha); color: var(--cinza); padding: 1.5rem 0; font-size: .9rem; }
+
+/* ---------- Landing ---------- */
+.bh-hero { background: var(--verde); color: #f2f5f3; border-radius: 14px; position: relative; overflow: hidden;
+  display: grid; grid-template-columns: minmax(0, 1fr) 360px 56px; gap: 3rem; align-items: center; padding: 4rem 0 4rem 3.5rem; }
+.bh-hero h1 { font-size: clamp(3rem, 6.5vw, 5.4rem); color: #fff; margin: 0 0 1.25rem; text-wrap: balance; }
+.bh-hero p { font-size: 1.15rem; max-width: 46ch; color: #cfdcd6; margin-bottom: 2rem; }
+.bh-hero .btn-linha { color: #fff; border-color: rgba(255,255,255,.35); }
+.bh-hero .btn-linha:hover { border-color: #fff; color: #fff; }
+.bh-poste { align-self: stretch; margin: -4rem 0; border-left: 3px solid var(--latao);
+  /* -60deg com período de 88px repete a cada 176px na vertical, então o ladrilho não tem emenda */
+  background: repeating-linear-gradient(-60deg, var(--poste) 0 22px, #f7f7f4 22px 44px, var(--verde-2) 44px 66px, #f7f7f4 66px 88px);
+  background-size: 100% 176px; animation: girar 4s linear infinite; }
+@keyframes girar { to { background-position: 0 176px; } }
+@media (prefers-reduced-motion: reduce) { .bh-poste { animation: none; } }
+
+/* Comprovante de exemplo na hero */
+.bh-ticket { background: #fbfaf6; color: var(--tinta); border-radius: 10px; padding: 1.4rem 1.5rem; position: relative;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .28); transform: rotate(-2deg); }
+.bh-ticket::before, .bh-ticket::after { content: ""; position: absolute; top: 58%; width: 22px; height: 22px; border-radius: 50%; background: var(--verde); }
+.bh-ticket::before { left: -11px; } .bh-ticket::after { right: -11px; }
+.bh-ticket-loja { font-size: .85rem; color: var(--cinza); }
+.bh-ticket-hora { font-family: var(--fonte-letreiro); font-weight: 800; font-size: 3.6rem; line-height: 1; margin: .35rem 0 .2rem; }
+.bh-ticket-dia { font-weight: 600; }
+.bh-ticket-corte { border-top: 2px dashed var(--linha); margin: 1.1rem -1.5rem; }
+.bh-ticket dl { display: grid; grid-template-columns: auto 1fr; gap: .3rem 1rem; margin: 0; font-size: .95rem; }
+.bh-ticket dt { color: var(--cinza); font-weight: 500; }
+.bh-ticket dd { margin: 0; text-align: right; font-weight: 600; }
+
+.bh-demo { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; align-items: center; padding: 1rem 1.25rem; margin-top: 1rem;
+  border: 1px dashed var(--latao-escuro); border-radius: 10px; background: #f8f3e6; font-size: .95rem; }
+.bh-demo strong { font-weight: 700; }
+.bh-demo code { color: var(--tinta); background: #fff; padding: .1rem .4rem; border-radius: 4px; font-size: .9rem; }
+
+.bh-recursos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2.5rem; margin: 4.5rem 0; }
+.bh-recursos h3 { font-size: 1.9rem; margin-bottom: .6rem; padding-top: 1rem; border-top: 3px solid var(--tinta); }
+.bh-recursos p { color: var(--cinza); margin: 0; max-width: 38ch; }
+
+.bh-planos { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+.bh-plano { background: var(--superficie); border: 1px solid var(--linha); border-radius: 10px; padding: 2rem; }
+.bh-plano h3 { font-size: 2rem; margin: 0; }
+.bh-plano .bh-preco { font-family: var(--fonte-letreiro); font-weight: 800; font-size: 3.2rem; line-height: 1; margin: .75rem 0 1.25rem; }
+.bh-plano .bh-preco small { font-family: var(--fonte-texto); font-size: 1rem; font-weight: 500; color: var(--cinza); }
+.bh-plano ul { list-style: none; padding: 0; margin: 0 0 1.5rem; display: grid; gap: .45rem; }
+.bh-plano li { padding-left: 1.4rem; position: relative; }
+.bh-plano li::before { content: ""; position: absolute; left: 0; top: .55em; width: .7rem; height: .35rem; border-left: 2px solid var(--verde-2); border-bottom: 2px solid var(--verde-2); transform: rotate(-45deg); }
+.bh-plano.destaque { background: var(--verde); color: #f2f5f3; border-color: var(--verde); }
+.bh-plano.destaque .bh-preco small { color: #b9cbc3; }
+.bh-plano.destaque li::before { border-color: var(--latao); }
+.bh-plano-nota { font-size: .9rem; color: var(--cinza); }
+.bh-plano.destaque .bh-plano-nota { color: #b9cbc3; }
+
+/* ---------- Telas de acesso ---------- */
+.bh-acesso { max-width: 460px; margin: 2rem auto; }
+.bh-acesso h1 { font-size: 3rem; margin-bottom: .35rem; }
+.bh-acesso > p { color: var(--cinza); margin-bottom: 1.5rem; }
+.bh-opcao-plano { display: flex; justify-content: space-between; gap: 1rem; align-items: center; border: 1px solid var(--linha);
+  border-radius: 8px; padding: .8rem 1rem; cursor: pointer; margin-bottom: .5rem; background: #fff; }
+.bh-opcao-plano:has(input:checked) { border-color: var(--verde); box-shadow: inset 0 0 0 1px var(--verde); background: #f4f8f6; }
+.bh-opcao-plano span { color: var(--cinza); font-size: .92rem; }
+
+/* ---------- Painel com menu lateral ---------- */
+.bh-app { display: grid; grid-template-columns: 240px minmax(0, 1fr); min-height: 100vh; }
+.bh-lateral { background: var(--verde); color: #e6eeea; display: flex; flex-direction: column; padding: 1.5rem 1rem; position: sticky; top: 0; height: 100vh; }
+.bh-lateral .bh-marca { color: #fff; padding: 0 .5rem; margin-bottom: 2rem; }
+.bh-menu { list-style: none; padding: 0; margin: 0; display: grid; gap: .15rem; }
+.bh-menu a { display: block; padding: .6rem .75rem; border-radius: 6px; color: #cfdcd6; text-decoration: none; font-weight: 500; border-left: 3px solid transparent; }
+.bh-menu a:hover { background: rgba(255,255,255,.06); color: #fff; }
+.bh-menu a[aria-current="page"] { background: rgba(255,255,255,.1); color: #fff; border-left-color: var(--latao); font-weight: 700; }
+.bh-usuario { margin-top: auto; padding: 1rem .5rem 0; border-top: 1px solid rgba(255,255,255,.12); font-size: .88rem; color: #b9cbc3; }
+.bh-usuario div { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin-bottom: .6rem; }
+.bh-usuario .btn { color: #fff; border-color: rgba(255,255,255,.3); }
+.bh-conteudo { padding: 2.5rem 3rem; max-width: 1200px; width: 100%; }
+
+.bh-indicadores { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); background: var(--superficie); border: 1px solid var(--linha); border-radius: 10px; margin-bottom: 1.5rem; }
+.bh-indicador { padding: 1.25rem 1.5rem; }
+.bh-indicador + .bh-indicador { border-left: 1px solid var(--linha); }
+.bh-indicador-rotulo { font-size: .88rem; color: var(--cinza); }
+.bh-indicador-valor { font-family: var(--fonte-letreiro); font-weight: 800; font-size: 2.5rem; line-height: 1.1; }
+.bh-indicador-valor.pequeno { font-size: 1.5rem; margin-top: .4rem; }
+
+.bh-link-publico { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; align-items: center; justify-content: space-between;
+  background: #f8f3e6; border: 1px dashed var(--latao-escuro); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
+.bh-link-publico code { font-size: 1rem; color: var(--tinta); background: transparent; word-break: break-all; }
+
+.bh-lista-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: .9rem 0; border-bottom: 1px solid var(--linha); }
+.bh-lista-item:last-child { border-bottom: 0; }
+
+/* ---------- Página pública de agendamento ---------- */
+.bh-loja { max-width: 820px; margin: 0 auto; }
+.bh-loja-cabeca { background: var(--verde); color: #fff; border-radius: 14px; padding: 2.25rem 2.5rem; margin-bottom: 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; overflow: hidden; }
+.bh-loja-cabeca h1 { font-size: clamp(2.6rem, 7vw, 4rem); margin: 0; }
+.bh-loja-cabeca p { margin: .4rem 0 0; color: #cfdcd6; }
+.bh-loja-cabeca .bh-poste { margin: -2.25rem -2.5rem -2.25rem 0; width: 44px; flex: none; }
+
+.bh-etapa { background: var(--superficie); border: 1px solid var(--linha); border-radius: 10px; padding: 1.75rem; margin-bottom: 1.25rem; }
+.bh-etapa h2 { font-size: 1.9rem; display: flex; align-items: center; gap: .75rem; margin-bottom: 1.25rem; }
+.bh-etapa h2 .num { width: 2.1rem; height: 2.1rem; border-radius: 50%; background: var(--tinta); color: #fff; display: inline-grid; place-items: center; font-size: 1.2rem; flex: none; }
+.bh-etapa h3 { font-family: var(--fonte-texto); font-size: .95rem; font-weight: 700; margin: 1.25rem 0 .6rem; }
+
+.bh-opcoes { display: grid; gap: .6rem; }
+.bh-opcoes.servicos { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.bh-opcoes.barbeiros, .bh-opcoes.dias { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+.bh-opcao { position: relative; }
+.bh-opcao input { position: absolute; opacity: 0; inset: 0; }
+.bh-opcao label { display: block; height: 100%; border: 1px solid var(--linha); border-radius: 8px; padding: .8rem 1rem; cursor: pointer; background: #fff; }
+.bh-opcao label:hover { border-color: var(--cinza); }
+.bh-opcao input:checked + label { border-color: var(--verde); box-shadow: inset 0 0 0 1px var(--verde); background: #f4f8f6; }
+.bh-opcao input:focus-visible + label { outline: 3px solid var(--latao); outline-offset: 2px; }
+.bh-opcao .nome { font-weight: 700; display: block; }
+.bh-opcao .detalhe { font-size: .88rem; color: var(--cinza); }
+.bh-opcoes.dias label, .bh-opcoes.barbeiros label { text-align: center; padding: .65rem .5rem; }
+
+.bh-slots { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: .5rem; }
+.bh-slot { position: relative; }
 .bh-slot input { position: absolute; opacity: 0; }
-.bh-slot label { display: inline-block; border: 1px solid #d6d3d1; border-radius: .5rem; padding: .4rem .8rem; cursor: pointer; background: #fff; }
-.bh-slot input:checked + label { background: var(--bh-ouro); border-color: var(--bh-ouro); color: #fff; }
-.bh-slot input:focus-visible + label { outline: 2px solid var(--bh-escuro); }
+.bh-slot label { display: block; text-align: center; border: 1px solid var(--linha); border-radius: 6px; padding: .5rem 0; cursor: pointer; background: #fff;
+  font-family: var(--fonte-letreiro); font-weight: 700; font-size: 1.25rem; line-height: 1.1; }
+.bh-slot label:hover { border-color: var(--tinta); }
+.bh-slot input:checked + label { background: var(--tinta); border-color: var(--tinta); color: #fff; }
+.bh-slot input:focus-visible + label { outline: 3px solid var(--latao); outline-offset: 2px; }
 
-.badge-status { padding: .3rem .6rem; border-radius: 1rem; font-size: .8rem; font-weight: 600; white-space: nowrap; }
-.status-Agendado { background: #e0f2fe; color: #075985; }
-.status-Confirmado { background: #dcfce7; color: #166534; }
-.status-Concluido { background: #e7e5e4; color: #44403c; }
-.status-Cancelado { background: #fee2e2; color: #991b1b; }
-tr.cancelado td { opacity: .55; }
+.bh-confere { display: grid; grid-template-columns: auto 1fr; gap: .5rem 1.5rem; margin: 0 0 1.5rem; }
+.bh-confere dt { color: var(--cinza); font-weight: 500; }
+.bh-confere dd { margin: 0; font-weight: 600; }
+.bh-telefone { font-family: var(--fonte-letreiro); font-weight: 800; font-size: 2.2rem; line-height: 1.1; display: block; margin: .25rem 0; }
+.bh-sucesso { border-left: 4px solid var(--verde-2); }
+.bh-sucesso h2 { color: var(--verde); }
 
-.table td, .table th { vertical-align: middle; }
+/* ---------- Assinatura ---------- */
+.bh-cartao-aviso { font-size: .9rem; color: var(--cinza); margin-top: 1rem; }
+.bh-cartao-aviso code { color: var(--tinta); background: var(--azulejo); padding: .05rem .35rem; border-radius: 4px; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 991.98px) {
+  .bh-hero { grid-template-columns: minmax(0, 1fr); padding: 3rem 1.75rem 2.5rem; gap: 2.5rem; }
+  .bh-hero .bh-poste { display: none; }
+  .bh-hero::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 10px;
+    background: repeating-linear-gradient(-60deg, var(--poste) 0 12px, #f7f7f4 12px 24px, var(--verde-2) 24px 36px, #f7f7f4 36px 48px); }
+  .bh-ticket { max-width: 380px; }
+  .bh-recursos { grid-template-columns: minmax(0, 1fr); gap: 1.75rem; margin: 3rem 0; }
+  .bh-planos { grid-template-columns: minmax(0, 1fr); }
+
+  .bh-app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+  .bh-lateral { position: static; height: auto; padding: 1rem; flex-direction: row; flex-wrap: wrap; align-items: center; gap: .75rem; }
+  .bh-lateral .bh-marca { margin: 0; }
+  .bh-menu { order: 3; width: 100%; display: flex; overflow-x: auto; gap: .25rem; }
+  .bh-menu a { white-space: nowrap; border-left: 0; border-bottom: 3px solid transparent; border-radius: 6px 6px 0 0; }
+  .bh-menu a[aria-current="page"] { border-bottom-color: var(--latao); }
+  .bh-usuario { margin: 0 0 0 auto; padding: 0; border: 0; display: flex; align-items: center; gap: .75rem; }
+  .bh-usuario div { display: none; }
+  .bh-conteudo { padding: 1.5rem 1rem; }
+  .bh-indicadores { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .bh-indicador:nth-child(3) { border-left: 0; }
+  .bh-indicador:nth-child(n+3) { border-top: 1px solid var(--linha); }
+}
+@media (max-width: 575.98px) {
+  h2 { font-size: 2rem; }
+  .bh-loja-cabeca { padding: 1.5rem; }
+  .bh-loja-cabeca .bh-poste { margin: -1.5rem -1.5rem -1.5rem 0; width: 28px; }
+  .bh-etapa { padding: 1.25rem; }
+  .bh-confere { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .bh-confere dd { margin-bottom: .6rem; }
+  .bh-plano { padding: 1.5rem; }
+}

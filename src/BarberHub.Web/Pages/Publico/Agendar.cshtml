@@ -3,140 +3,165 @@
 @{
     ViewData["Title"] = Model.Barbearia.Nome;
     var slug = Model.Barbearia.Slug;
+    var barbeiroMarcado = Model.BarbeiroId ?? Model.Barbeiros.FirstOrDefault()?.Id;
+    var diaMarcado = Model.Data ?? Model.DiasAbertos.FirstOrDefault().ToString("yyyy-MM-dd");
 }
 
-<div class="row justify-content-center">
-    <div class="col-lg-8">
-        <div class="bh-hero mb-4 py-4">
-            <div class="small opacity-75">Agendamento online</div>
-            <h1 class="h2 mb-0">@Model.Barbearia.Nome</h1>
+<div class="bh-loja">
+    <header class="bh-loja-cabeca">
+        <div>
+            <h1>@Model.Barbearia.Nome</h1>
+            <p>Escolha o serviço, o barbeiro e o horário. Leva menos de um minuto.</p>
         </div>
+        <div class="bh-poste" aria-hidden="true"></div>
+    </header>
 
-        @if (TempData["Agendado"] is string agendado)
+    @if (TempData["Agendado"] is string agendado)
+    {
+        <div class="bh-etapa bh-sucesso">
+            <h2>Horário agendado</h2>
+            <p>@agendado</p>
+            <a href="/b/@slug" class="btn btn-linha">Agendar outro horário</a>
+        </div>
+    }
+
+    @if (!Model.AssinaturaAtiva)
+    {
+        <div class="alert alert-warning">O agendamento online desta barbearia está indisponível no momento. Fale direto com a barbearia para marcar.</div>
+    }
+    else if (Model.Servicos.Count == 0 || Model.Barbeiros.Count == 0)
+    {
+        <div class="alert alert-info">Esta barbearia ainda está montando a agenda online. Volte em breve.</div>
+    }
+    else
+    {
+        @if (Model.Erro is not null && (Model.Revisando || Model.Horarios is null))
         {
-            <div class="bh-card mb-4 border-success">
-                <h4 class="text-success">Horário agendado!</h4>
-                <p class="mb-2">@agendado</p>
-                <a href="/b/@slug" class="btn btn-outline-dark btn-sm">Agendar outro horário</a>
+            <div class="alert alert-danger">@Model.Erro</div>
+        }
+
+        @if (Model.Revisando)
+        {
+            @* Conferência antes de gravar, principalmente do celular *@
+            <div class="bh-etapa">
+                <h2>Confira antes de confirmar</h2>
+                <dl class="bh-confere">
+                    <dt>Serviço</dt><dd>@Model.ServicoEscolhido!.Nome, @Model.ServicoEscolhido.DuracaoMinutos min, @Formulario.Moeda(Model.ServicoEscolhido.Preco)</dd>
+                    <dt>Barbeiro</dt><dd>@Model.BarbeiroEscolhido!.Nome</dd>
+                    <dt>Quando</dt><dd>@BarberHub.Web.Pages.Publico.AgendarModel.NomeDia(Model.DiaEscolhido!.Value) às @Model.Hora</dd>
+                    <dt>Nome</dt><dd>@Model.Nome</dd>
+                </dl>
+                <div class="alert alert-warning">
+                    Este é o seu celular?
+                    <span class="bh-telefone">@Model.TelefoneFormatado</span>
+                    A barbearia vai usar este número para confirmar o horário pelo WhatsApp.
+                </div>
+                <form method="post" asp-page-handler="Confirmar" asp-route-slug="@slug" class="d-flex flex-wrap gap-2">
+                    <input type="hidden" asp-for="ServicoId" />
+                    <input type="hidden" asp-for="BarbeiroId" />
+                    <input type="hidden" asp-for="Data" />
+                    <input type="hidden" asp-for="Hora" />
+                    <input type="hidden" asp-for="Nome" />
+                    <input type="hidden" asp-for="Telefone" />
+                    <button class="btn btn-bh btn-lg">Sim, confirmar agendamento</button>
+                    <a class="btn btn-linha btn-lg" href="/b/@slug?ServicoId=@Model.ServicoId&BarbeiroId=@Model.BarbeiroId&Data=@Model.Data">Corrigir dados</a>
+                </form>
             </div>
-        }
-
-        @if (!Model.AssinaturaAtiva)
-        {
-            <div class="alert alert-warning">O agendamento online desta barbearia está temporariamente indisponível. Entre em contato diretamente com a barbearia.</div>
-        }
-        else if (Model.Servicos.Count == 0 || Model.Barbeiros.Count == 0)
-        {
-            <div class="alert alert-info">Esta barbearia ainda está configurando a agenda online.</div>
         }
         else
         {
-            @if (Model.Erro is not null)
-            {
-                <div class="alert alert-danger">@Model.Erro</div>
-            }
+            <form method="get" class="bh-etapa">
+                <h2><span class="num">1</span>Serviço, barbeiro e dia</h2>
 
-            @if (Model.Revisando)
-            {
-                @* Etapa 3: conferência antes de gravar, principalmente do celular *@
-                <div class="bh-card">
-                    <h4>Confira seu agendamento</h4>
-                    <dl class="row mb-3">
-                        <dt class="col-sm-4">Serviço</dt><dd class="col-sm-8">@Model.ServicoEscolhido!.Nome · @Formulario.Moeda(Model.ServicoEscolhido.Preco) · @Model.ServicoEscolhido.DuracaoMinutos min</dd>
-                        <dt class="col-sm-4">Barbeiro</dt><dd class="col-sm-8">@Model.BarbeiroEscolhido!.Nome</dd>
-                        <dt class="col-sm-4">Quando</dt><dd class="col-sm-8">@BarberHub.Web.Pages.Publico.AgendarModel.NomeDia(Model.DiaEscolhido!.Value) às @Model.Hora</dd>
-                        <dt class="col-sm-4">Nome</dt><dd class="col-sm-8">@Model.Nome</dd>
-                    </dl>
-                    <div class="alert alert-warning">
-                        Seu celular é <strong class="fs-5">@Model.TelefoneFormatado</strong>?<br />
-                        A barbearia vai usar este número para confirmar seu horário pelo WhatsApp.
-                    </div>
-                    <form method="post" asp-page-handler="Confirmar" asp-route-slug="@slug" class="d-flex gap-2">
-                        <input type="hidden" asp-for="ServicoId" />
-                        <input type="hidden" asp-for="BarbeiroId" />
-                        <input type="hidden" asp-for="Data" />
-                        <input type="hidden" asp-for="Hora" />
-                        <input type="hidden" asp-for="Nome" />
-                        <input type="hidden" asp-for="Telefone" />
-                        <button class="btn btn-bh">Sim, confirmar agendamento</button>
-                        <a class="btn btn-outline-secondary" href="/b/@slug?ServicoId=@Model.ServicoId&BarbeiroId=@Model.BarbeiroId&Data=@Model.Data">Corrigir</a>
-                    </form>
+                <h3>Serviço</h3>
+                <div class="bh-opcoes servicos">
+                    @foreach (var s in Model.Servicos)
+                    {
+                        <div class="bh-opcao">
+                            <input type="radio" name="ServicoId" id="s-@s.Id" value="@s.Id" checked="@(s.Id == Model.ServicoId)" required />
+                            <label for="s-@s.Id">
+                                <span class="nome">@s.Nome</span>
+                                <span class="detalhe">@s.DuracaoMinutos min, @Formulario.Moeda(s.Preco)</span>
+                            </label>
+                        </div>
+                    }
                 </div>
-            }
-            else
-            {
-                @* Etapa 1: serviço, barbeiro e dia *@
-                <form method="get" class="bh-card mb-4">
-                    <h5>1. O que você quer fazer?</h5>
-                    <div class="row g-2 align-items-end">
-                        <div class="col-md-12 col-lg-5">
-                            <label class="form-label" for="ServicoId">Serviço</label>
-                            <select class="form-select" name="ServicoId" id="ServicoId" required>
-                                <option value="">Escolha...</option>
-                                @foreach (var s in Model.Servicos)
-                                {
-                                    <option value="@s.Id" selected="@(s.Id == Model.ServicoId)">@s.Nome · @Formulario.Moeda(s.Preco) · @s.DuracaoMinutos min</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-4 col-lg-2">
-                            <label class="form-label" for="BarbeiroId">Barbeiro</label>
-                            <select class="form-select" name="BarbeiroId" id="BarbeiroId" required>
-                                @foreach (var b in Model.Barbeiros)
-                                {
-                                    <option value="@b.Id" selected="@(b.Id == Model.BarbeiroId)">@b.Nome</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-4 col-lg-3">
-                            <label class="form-label" for="Data">Dia</label>
-                            <select class="form-select" name="Data" id="Data">
-                                @foreach (var d in Model.DiasAbertos)
-                                {
-                                    var valor = d.ToString("yyyy-MM-dd");
-                                    <option value="@valor" selected="@(valor == Model.Data)">@BarberHub.Web.Pages.Publico.AgendarModel.NomeDia(d)</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="col-md-4 col-lg-2"><button class="btn btn-dark w-100">Ver horários</button></div>
-                    </div>
-                </form>
 
-                @* Etapa 2: horário + dados do cliente *@
-                @if (Model.Horarios is not null)
-                {
-                    <form method="post" asp-page-handler="Revisar" asp-route-slug="@slug" class="bh-card mb-4">
-                        <input type="hidden" asp-for="ServicoId" />
-                        <input type="hidden" asp-for="BarbeiroId" />
-                        <input type="hidden" asp-for="Data" />
-                        <h5>2. Escolha o horário</h5>
-                        @if (Model.Horarios.Count == 0)
-                        {
-                            <p class="text-muted">Sem horários livres para @Model.BarbeiroEscolhido!.Nome neste dia. Tente outro dia ou outro barbeiro.</p>
-                        }
-                        else
-                        {
-                            <div class="bh-slots mb-4">
-                                @foreach (var h in Model.Horarios)
-                                {
-                                    var hora = h.ToString("HH:mm");
-                                    <span class="bh-slot">
-                                        <input type="radio" name="Hora" id="h-@hora" value="@hora" checked="@(hora == Model.Hora)" />
-                                        <label for="h-@hora">@hora</label>
-                                    </span>
-                                }
-                            </div>
-                            <h5>3. Seus dados</h5>
-                            <div class="row g-2">
-                                <div class="col-md-6"><label class="form-label" for="Nome">Nome</label><input class="form-control" asp-for="Nome" required /></div>
-                                <div class="col-md-6"><label class="form-label" for="Telefone">Celular (WhatsApp)</label><input class="form-control" asp-for="Telefone" type="tel" placeholder="(11) 98765-4321" required /></div>
-                            </div>
-                            <p class="small text-muted mt-2">Não precisa criar conta. Usamos seu celular só para confirmar o horário.</p>
-                            <button class="btn btn-bh">Continuar</button>
-                        }
-                    </form>
-                }
+                <h3>Barbeiro</h3>
+                <div class="bh-opcoes barbeiros">
+                    @foreach (var b in Model.Barbeiros)
+                    {
+                        <div class="bh-opcao">
+                            <input type="radio" name="BarbeiroId" id="b-@b.Id" value="@b.Id" checked="@(b.Id == barbeiroMarcado)" />
+                            <label for="b-@b.Id"><span class="nome">@b.Nome</span></label>
+                        </div>
+                    }
+                </div>
+
+                <h3>Dia</h3>
+                <div class="bh-opcoes dias">
+                    @foreach (var d in Model.DiasAbertos)
+                    {
+                        var valor = d.ToString("yyyy-MM-dd");
+                        <div class="bh-opcao">
+                            <input type="radio" name="Data" id="d-@valor" value="@valor" checked="@(valor == diaMarcado)" />
+                            <label for="d-@valor"><span class="nome text-capitalize">@BarberHub.Web.Pages.Publico.AgendarModel.NomeDia(d)</span></label>
+                        </div>
+                    }
+                </div>
+
+                <button class="btn btn-verde btn-lg mt-4">Ver horários livres</button>
+            </form>
+
+            @if (Model.Horarios is not null)
+            {
+                <form method="post" asp-page-handler="Revisar" asp-route-slug="@slug" class="bh-etapa" id="horarios">
+                    <input type="hidden" asp-for="ServicoId" />
+                    <input type="hidden" asp-for="BarbeiroId" />
+                    <input type="hidden" asp-for="Data" />
+                    <h2><span class="num">2</span>Horário</h2>
+                    @if (Model.Erro is not null)
+                    {
+                        <div class="alert alert-danger">@Model.Erro</div>
+                    }
+                    @if (Model.Horarios.Count == 0)
+                    {
+                        <p class="text-muted mb-0">@Model.BarbeiroEscolhido!.Nome não tem horário livre neste dia. Escolha outro dia ou outro barbeiro.</p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">
+                            @Model.ServicoEscolhido?.Nome com @Model.BarbeiroEscolhido?.Nome,
+                            @(Model.DiaEscolhido is { } dia ? BarberHub.Web.Pages.Publico.AgendarModel.NomeDia(dia) : "").
+                        </p>
+                        <div class="bh-slots mb-2">
+                            @foreach (var h in Model.Horarios)
+                            {
+                                var hora = h.ToString("HH:mm");
+                                <span class="bh-slot">
+                                    <input type="radio" name="Hora" id="h-@hora" value="@hora" checked="@(hora == Model.Hora)" required />
+                                    <label for="h-@hora">@hora</label>
+                                </span>
+                            }
+                        </div>
+
+                        <h2 class="mt-4"><span class="num">3</span>Seus dados</h2>
+                        <div class="row g-3">
+                            <div class="col-md-6"><label class="form-label" for="Nome">Nome</label><input class="form-control" asp-for="Nome" autocomplete="name" required /></div>
+                            <div class="col-md-6"><label class="form-label" for="Telefone">Celular com WhatsApp</label><input class="form-control" asp-for="Telefone" type="tel" autocomplete="tel" placeholder="(11) 98765-4321" required /></div>
+                        </div>
+                        <p class="small text-muted mt-2">Não precisa criar conta. O celular serve só para a barbearia confirmar o seu horário.</p>
+                        <button class="btn btn-bh btn-lg">Revisar agendamento</button>
+                    }
+                </form>
             }
         }
-    </div>
+    }
 </div>
+
+@section Scripts {
+    @if (Model.Horarios is not null && !Model.Revisando && Model.Erro is null)
+    {
+        <script>document.getElementById('horarios')?.scrollIntoView({ block: 'start' });</script>
+    }
+}

@@ -22,4 +22,11 @@ public static class Formulario
         TimeOnly.TryParseExact(texto, ["HH:mm", "HH:mm:ss"], CultureInfo.InvariantCulture, DateTimeStyles.None, out var h) ? h : null;
 
     public static string Moeda(decimal valor) => valor.ToString("C", PtBr);
+
+    /// <summary>"Terça-feira, 24 de novembro": só a primeira letra maiúscula.</summary>
+    public static string DiaPorExtenso(DateOnly dia)
+    {
+        var texto = dia.ToString("dddd, d 'de' MMMM", PtBr);
+        return char.ToUpper(texto[0], PtBr) + texto[1..];
+    }
 }

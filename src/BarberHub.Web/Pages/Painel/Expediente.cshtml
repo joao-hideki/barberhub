@@ -2,19 +2,26 @@
 @model BarberHub.Web.Pages.Painel.ExpedienteModel
 @{ ViewData["Title"] = "Expediente"; }
 
-<h2>Expediente</h2>
-<p class="text-muted">Os clientes só conseguem agendar horários em que o serviço cabe inteiro dentro do expediente.</p>
+<div class="bh-secao-titulo">
+    <div>
+        <h2>Expediente</h2>
+        <p>O cliente só consegue marcar um horário se o serviço inteiro couber dentro do expediente.</p>
+    </div>
+</div>
 
 <div class="bh-card" style="max-width: 640px">
     <form method="post">
+        <div class="row g-2 pb-2 small text-muted fw-semibold">
+            <div class="col-4">Dia</div><div class="col-4">Abre</div><div class="col-4">Fecha</div>
+        </div>
         @foreach (var dia in BarberHub.Web.Pages.Painel.ExpedienteModel.Semana)
         {
             var h = Model.Dias.GetValueOrDefault(dia);
-            <div class="row g-2 align-items-center border-bottom py-2">
+            <div class="row g-2 align-items-center border-top py-2">
                 <div class="col-4">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" name="aberto-@dia" id="aberto-@dia" checked="@(h is not null)" />
-                        <label class="form-check-label text-capitalize" for="aberto-@dia">@BarberHub.Web.Pages.Painel.ExpedienteModel.Nome(dia)</label>
+                        <label class="form-check-label text-capitalize fw-semibold" for="aberto-@dia">@BarberHub.Web.Pages.Painel.ExpedienteModel.Nome(dia)</label>
                     </div>
                 </div>
                 <div class="col-4"><input type="time" class="form-control" name="abre-@dia" value="@((h?.Abre ?? new TimeOnly(9, 0)).ToString("HH:mm"))" step="900" aria-label="Abre" /></div>
