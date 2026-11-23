@@ -4,11 +4,15 @@
 
 > MVP desenvolvido para o trabalho prático de SaaS da FATEC.
 
-## Integrantes
+## Integrante
 
-- João Hideki
-- _[Nome do integrante]_
-- _[Nome do integrante]_
+- João Hideki Takayasu
+
+## Telas
+
+| Página inicial | Agenda do dia |
+|---|---|
+| ![Página inicial](docs/img/tela-inicial.jpg) | ![Agenda do dia](docs/img/tela-agenda.jpg) |
 
 ## O problema
 
@@ -50,7 +54,7 @@ Os dois planos têm 14 dias grátis sem cartão, assinatura mensal no cartão e 
 
 | Camada | Tecnologia |
 |---|---|
-| Interface | ASP.NET Core **Razor Pages** (renderização no servidor) + Bootstrap 5 |
+| Interface | ASP.NET Core **Razor Pages** (renderização no servidor) + Bootstrap 5; página inicial com o kit visual da skill taste-skill (MIT) |
 | Lógica | C# / **.NET 10**, serviços de domínio com injeção de dependência |
 | Dados | **PostgreSQL 17** com **Entity Framework Core 10** (migrations) |
 | Autenticação | Cookie do ASP.NET Core e senha com hash PBKDF2 (`PasswordHasher`) |
@@ -147,7 +151,7 @@ Mais detalhes estão no [relatório do projeto](docs/BarberHub-Relatorio.pdf).
 
 ## Uso de IA
 
-O desenvolvimento usou o **Claude Code** (modelo Claude Opus 5.5, da Anthropic) para planejamento, programação em TDD, testes e documentação. Todo o código foi revisado pelo grupo. O relatório traz os detalhes e exemplos concretos.
+O desenvolvimento usou o **Claude Code** (modelo Claude Opus 5.5, da Anthropic) para planejamento, programação em TDD, testes e documentação. Todo o código foi revisado pelo autor. O relatório traz os detalhes e exemplos concretos.
 
 ## Próximos passos
 
@@ -155,3 +159,4 @@ O desenvolvimento usou o **Claude Code** (modelo Claude Opus 5.5, da Anthropic) 
 - Confirmação automática por WhatsApp/SMS com código (OTP) e lembrete 1 dia antes.
 - Agenda individual por barbeiro (folgas e intervalo de almoço).
 - Publicação em nuvem (ex.: Azure App Service + PostgreSQL gerenciado).
+- Restrição de exclusão no PostgreSQL contra agendamentos simultâneos no mesmo horário.

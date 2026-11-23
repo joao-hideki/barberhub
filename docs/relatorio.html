@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <title>BarberHub · Relatório do Projeto</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@600&family=Figtree:wght@400;600&display=swap">
 <style>
   @page { size: A4; margin: 18mm 16mm; }
   * { box-sizing: border-box; }
-  body { font-family: "Segoe UI", Arial, sans-serif; color: #1c1917; font-size: 10.5pt; line-height: 1.5; margin: 0; }
-  h1 { font-size: 30pt; margin: 0; letter-spacing: -.5px; }
-  h1 span, .ouro { color: #d97706; }
-  h2 { font-size: 15pt; border-bottom: 2px solid #d97706; padding-bottom: 3px; margin: 22px 0 10px; page-break-after: avoid; }
+  body { font-family: "Figtree", "Segoe UI", Arial, sans-serif; color: #17201d; font-size: 10.5pt; line-height: 1.5; margin: 0; }
+  h1 { font-family: "Big Shoulders Display", "Arial Narrow", sans-serif; font-weight: 600; font-size: 44pt; margin: 0; letter-spacing: 0; }
+  h1 span, .ouro { color: #163a30; }
+  h2 { font-size: 15pt; border-bottom: 2px solid #a8822f; padding-bottom: 3px; margin: 22px 0 10px; page-break-after: avoid; }
   h3 { font-size: 11.5pt; margin: 14px 0 6px; page-break-after: avoid; }
   p { margin: 6px 0; }
   ul { margin: 4px 0 8px; padding-left: 20px; }
@@ -20,11 +21,16 @@
   code { background: #f5f5f4; padding: 0 3px; border-radius: 3px; font-size: 9pt; }
   .capa { height: 255mm; display: flex; flex-direction: column; justify-content: center; page-break-after: always; }
   .capa .sub { font-size: 14pt; color: #57534e; margin-top: 8px; }
-  .capa .bloco { margin-top: 40px; border-left: 4px solid #d97706; padding-left: 14px; }
-  .caixa { background: #fffbeb; border: 1px solid #fcd34d; border-radius: 6px; padding: 8px 12px; margin: 8px 0; page-break-inside: avoid; }
+  .capa .bloco { margin-top: 40px; border-left: 4px solid #163a30; padding-left: 14px; }
+  .caixa { background: #f6efdd; border: 1px solid #d9c08a; border-radius: 6px; padding: 8px 12px; margin: 8px 0; page-break-inside: avoid; }
   .diagrama { text-align: center; margin: 10px 0; page-break-inside: avoid; }
   .quebra { page-break-before: always; }
   .pequeno { font-size: 9pt; color: #57534e; }
+  .telas { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; page-break-inside: avoid; }
+  .telas figure { margin: 0; border: 1px solid #d6d3d1; border-radius: 6px; overflow: hidden; }
+  .telas figure.alta { grid-row: span 2; }
+  .telas img { display: block; width: 100%; }
+  .telas figcaption { font-size: 8.5pt; color: #57534e; padding: 4px 8px; }
 </style>
 </head>
 <body>
@@ -35,11 +41,9 @@
   <div class="bloco">
     <p><strong>Trabalho prático: Desenvolvimento e apresentação de um SaaS</strong></p>
     <p>FATEC · Prof. David Silva · Novembro de 2026</p>
-    <p style="margin-top:18px"><strong>Integrantes</strong></p>
+    <p style="margin-top:18px"><strong>Integrante</strong></p>
     <ul>
-      <li>João Hideki</li>
-      <li>[Nome do integrante]</li>
-      <li>[Nome do integrante]</li>
+      <li>João Hideki Takayasu</li>
     </ul>
     <p style="margin-top:18px"><strong>Repositório:</strong> https://github.com/joao-hideki/barberhub</p>
   </div>
@@ -76,6 +80,14 @@
   <tr><td>Assinatura</td><td>Escolha do plano e pagamento com cartão por um gateway simulado, com histórico de pagamentos.</td></tr>
 </table>
 
+<h3>Telas do MVP</h3>
+<div class="telas">
+  <figure><img src="img/tela-inicial.jpg" alt="Página inicial do BarberHub"><figcaption>Página inicial com a proposta e os planos</figcaption></figure>
+  <figure><img src="img/tela-agenda.jpg" alt="Agenda do dia no painel do dono"><figcaption>Agenda do dia: WhatsApp, confirmar, concluir e cancelar</figcaption></figure>
+  <figure class="alta"><img src="img/tela-cliente.jpg" alt="Página de agendamento do cliente"><figcaption>Página do cliente: serviço, barbeiro, dia e horários livres</figcaption></figure>
+  <figure><img src="img/tela-painel.jpg" alt="Painel com indicadores do mês"><figcaption>Painel: atendimentos, faturamento e assinatura</figcaption></figure>
+</div>
+
 <h3>Modelo de cobrança</h3>
 <table>
   <tr><th>Plano</th><th>Preço</th><th>Barbeiros</th><th>Inclui</th></tr>
@@ -107,8 +119,8 @@
   <text x="80" y="124" text-anchor="middle" font-weight="bold">Cliente</text>
   <text x="80" y="142" text-anchor="middle" fill="#57534e">celular · /b/{slug}</text>
   <!-- container web -->
-  <rect x="200" y="8" width="300" height="250" rx="10" fill="#fffbeb" stroke="#d97706" stroke-dasharray="5 3"/>
-  <text x="350" y="26" text-anchor="middle" fill="#b45309" font-weight="bold">Container "web" (ASP.NET Core .NET 10)</text>
+  <rect x="200" y="8" width="300" height="250" rx="10" fill="#eef4f0" stroke="#163a30" stroke-dasharray="5 3"/>
+  <text x="350" y="26" text-anchor="middle" fill="#163a30" font-weight="bold">Container "web" (ASP.NET Core .NET 10)</text>
   <rect x="220" y="38" width="260" height="52" rx="6" fill="#fff" stroke="#1c1917"/>
   <text x="350" y="58" text-anchor="middle" font-weight="bold">Interface · Razor Pages</text>
   <text x="350" y="76" text-anchor="middle" fill="#57534e">telas .cshtml + PageModel, login por cookie</text>
@@ -143,7 +155,8 @@
 
 <h3>Interface</h3>
 <p>
-  <strong>ASP.NET Core Razor Pages</strong> com Bootstrap 5. Cada tela tem um arquivo <code>.cshtml</code> (HTML com C#)
+  <strong>ASP.NET Core Razor Pages</strong> com Bootstrap 5 nas telas do app. A página inicial usa o kit visual da skill
+  <em>taste-skill</em> (licença MIT), e as demais telas seguem o mesmo padrão de cores e tipografia. Cada tela tem um arquivo <code>.cshtml</code> (HTML com C#)
   e um <code>PageModel</code> que trata o GET e o POST do formulário. As telas do dono ficam em <code>/Painel</code>,
   protegidas por login (cookie). A página do cliente, <code>/b/{slug}</code>, é pública. Formulários usam token antifalsificação (CSRF).
 </p>
@@ -173,7 +186,7 @@
 <h3>Tecnologias e justificativa</h3>
 <table>
   <tr><th style="width:28%">Tecnologia</th><th>Por que foi escolhida</th></tr>
-  <tr><td>C# / .NET 10 (LTS)</td><td>Linguagem que o grupo domina; versão com suporte de longo prazo.</td></tr>
+  <tr><td>C# / .NET 10 (LTS)</td><td>Linguagem que o autor domina; versão com suporte de longo prazo.</td></tr>
   <tr><td>Razor Pages</td><td>Renderização no servidor e acesso direto aos serviços, sem API separada. Menos código para um MVP.</td></tr>
   <tr><td>PostgreSQL + EF Core</td><td>Banco relacional robusto e gratuito; o ORM e as migrations evitam SQL manual e versionam o esquema.</td></tr>
   <tr><td>Docker Compose</td><td>Qualquer pessoa sobe banco e aplicação com um comando, sem instalar PostgreSQL nem .NET.</td></tr>
@@ -208,26 +221,28 @@
 <h3>Ferramentas utilizadas</h3>
 <ul>
   <li><strong>Claude Code</strong> (agente de programação da Anthropic, modelo <strong>Claude Opus 5.5</strong>), usado no terminal dentro da pasta do projeto.</li>
+  <li><strong>Skill de design</strong> <em>design-taste-frontend</em>, instalada no Claude Code (tasteskill.dev), que traz regras de layout e um verificador que testa a página no navegador em várias larguras.</li>
 </ul>
 <h3>Etapas em que ajudou</h3>
 <table>
   <tr><th style="width:24%">Etapa</th><th>Contribuição</th></tr>
-  <tr><td>Entendimento e planejamento</td><td>Organizou os requisitos do enunciado em entregáveis, propôs o tema e o escopo do MVP e discutiu decisões com o grupo (stack, cadastro do cliente, gateway).</td></tr>
+  <tr><td>Entendimento e planejamento</td><td>Organizou os requisitos do enunciado em entregáveis, propôs o tema e o escopo do MVP e discutiu decisões com o autor (stack, cadastro do cliente, gateway).</td></tr>
   <tr><td>Programação (TDD)</td><td>Escreveu os testes de cada regra antes do código e depois a implementação mínima, com commits <em>red/green</em>.</td></tr>
   <tr><td>Testes</td><td>Configurou Testcontainers e o relógio falso e criou um teste ponta a ponta via HTTP do fluxo completo.</td></tr>
   <tr><td>Solução de problemas</td><td>Diagnosticou incompatibilidades de versão e erros de layout (conferidos por screenshots).</td></tr>
-  <tr><td>Documentação</td><td>Rascunho do README, deste relatório e do roteiro da apresentação, revisados pelo grupo.</td></tr>
+  <tr><td>Interface</td><td>Redesenhou a página inicial com a skill de design e levou o mesmo padrão às demais telas, conferindo cada uma por screenshots no desktop e no celular.</td></tr>
+  <tr><td>Documentação</td><td>Rascunho do README, deste relatório e do roteiro da apresentação, revisados pelo autor.</td></tr>
 </table>
 
 <h3>Exemplos concretos</h3>
 <div class="caixa">
-  <strong>1. Gateway de pagamento.</strong> O grupo perguntou se dava para integrar um gateway real. A IA ponderou que isso exigiria
+  <strong>1. Gateway de pagamento.</strong> O autor perguntou se dava para integrar um gateway real. A IA ponderou que isso exigiria
   conta e <strong>chaves de API</strong> (proibidas no repositório pelo enunciado) e um <em>webhook</em> com URL pública
   (a demonstração é local), além do risco de falhar ao vivo. Ela propôs a interface <code>IGatewayPagamento</code> com
   um <code>GatewayPagamentoSimulado</code> (cartão final 0000 é recusado). A integração real ficou como próximo passo, que exige trocar só uma linha.
 </div>
 <div class="caixa">
-  <strong>2. Risco de telefone errado.</strong> O grupo apontou que o cliente poderia digitar o celular errado. A IA sugeriu proteção em camadas,
+  <strong>2. Risco de telefone errado.</strong> O autor apontou que o cliente poderia digitar o celular errado. A IA sugeriu proteção em camadas,
   que viraram regras testadas: normalizar e validar o celular (DDD existente e 9º dígito), mostrar uma tela de conferência
   com o número formatado, confirmar pela barbearia com um link do WhatsApp (sem custo de API) e limitar a 2 horários em aberto por celular, contra trote.
 </div>
@@ -236,8 +251,15 @@
   A IA identificou o erro <code>NU1202</code> e fixou as versões compatíveis com o .NET 10. Durante a revisão visual,
   ela também encontrou um card esticado na página pública e corrigiu a regra de CSS responsável.
 </div>
+<div class="caixa">
+  <strong>4. Redesenho com verificação automática.</strong> A interface inicial foi considerada genérica. Com a skill
+  <em>design-taste-frontend</em>, a IA refez a página inicial mantendo as cores da marca e passou por um verificador que
+  testa a página em 5 larguras de tela. Depois, ao revisar os prints em telas de notebook (1366x768), o autor percebeu
+  que o rodapé ficava sobreposto: as seções tinham altura fixa de uma tela. A correção fez as seções crescerem com o conteúdo
+  em telas baixas.
+</div>
 <p class="pequeno">
-  Todo o código gerado com auxílio de IA foi lido e revisado pelo grupo, que é responsável por ele e sabe explicá-lo.
+  Todo o código gerado com auxílio de IA foi lido e revisado pelo autor, que é responsável por ele e sabe explicá-lo.
 </p>
 
 <h2>5. Dificuldades e próximos passos</h2>
@@ -247,6 +269,7 @@
   <li>Regras de horário: sobreposição de intervalos, serviço que precisa caber inteiro no expediente e fuso horário.</li>
   <li>Disciplina do TDD: resistir a escrever o código antes do teste.</li>
   <li>Cobrança sem gateway real e sem expor credenciais.</li>
+  <li>Interface responsiva: o layout precisou ser conferido em várias larguras e alturas de tela.</li>
 </ul>
 <h3>Próximos passos</h3>
 <ul>
@@ -254,6 +277,8 @@
   <li>Confirmação por código (OTP) via WhatsApp/SMS e lembrete automático na véspera.</li>
   <li>Agenda individual por barbeiro (folgas e intervalo de almoço) e cancelamento pelo próprio cliente.</li>
   <li>Publicação em nuvem com domínio próprio e HTTPS.</li>
+  <li>Garantir no próprio PostgreSQL que dois cliques simultâneos no mesmo horário não gerem agendamento duplicado
+    (restrição de exclusão <code>EXCLUDE USING gist</code>). Hoje a checagem de conflito é feita pelo código antes de gravar.</li>
 </ul>
 
 </body>

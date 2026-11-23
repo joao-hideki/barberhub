@@ -34,7 +34,7 @@
 
 Mostrar o diagrama do relatório (seção 2):
 
-- **Interface:** Razor Pages, ou seja, HTML gerado no servidor, sem API separada. É mais simples para um MVP, e o grupo domina C#.
+- **Interface:** Razor Pages, ou seja, HTML gerado no servidor, sem API separada. É mais simples para um MVP, e eu domino C#.
 - **Lógica:** serviços de domínio (`AgendamentoService` etc.) com injeção de dependência. As telas só chamam os serviços.
 - **Dados:** PostgreSQL via EF Core, com migrations aplicadas quando o app sobe.
 - **Docker Compose:** qualquer pessoa roda com um comando, sem instalar banco.
@@ -53,8 +53,8 @@ Mostrar o diagrama do relatório (seção 2):
 - Ferramenta: **Claude Code** (Claude Opus 5.5).
 - Ajudou no planejamento do escopo, na programação em TDD, nos testes, na solução de problemas e na documentação.
 - **Exemplo concreto:** a IA recomendou **não** integrar um gateway real (chaves de API proibidas no repositório, webhook precisa de URL pública, risco na demo) e propôs a interface `IGatewayPagamento` com simulador.
-- **Outro exemplo:** quando o grupo levantou o risco de o cliente digitar o telefone errado, a IA propôs a proteção em camadas que virou regra testada.
-- "Revisamos todo o código e sabemos explicar cada parte."
+- **Outro exemplo:** quando eu levantei o risco de o cliente digitar o telefone errado, a IA propôs a proteção em camadas que virou regra testada.
+- "Revisei todo o código e sei explicar cada parte."
 
 ## 6. Dificuldades e próximos passos (30 s)
 
@@ -65,7 +65,7 @@ Mostrar o diagrama do relatório (seção 2):
 
 | Pergunta | Resposta curta |
 |---|---|
-| Por que Razor e não React + API? | Para um MVP, a renderização no servidor tem menos peças, o grupo domina C# e o foco ficou nas regras de negócio. Se surgir um app mobile, os serviços já estão separados e dá para expor uma API depois. |
+| Por que Razor e não React + API? | Para um MVP, a renderização no servidor tem menos peças, eu domino C# e o foco ficou nas regras de negócio. Se surgir um app mobile, os serviços já estão separados e dá para expor uma API depois. |
 | Como garante que uma barbearia não vê dados da outra? | O Id da barbearia vem do cookie de login, e todo serviço filtra por `BarbeariaId`. Há testes específicos para isso. |
 | E se dois clientes tentarem o mesmo horário juntos? | O serviço verifica a sobreposição antes de gravar. Em produção, adicionaríamos uma constraint de exclusão no PostgreSQL (`EXCLUDE USING gist`) para cobrir a concorrência. |
 | Onde fica a senha do banco? | No arquivo `.env`, que não vai para o git. O repositório tem só o `.env.example`. A senha dos usuários é guardada com hash PBKDF2. |
