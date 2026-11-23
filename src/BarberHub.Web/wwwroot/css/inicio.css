@@ -1,0 +1,61 @@
+/* Página inicial (experimento): só o que fica dentro dos visuais e a marca. O resto vem do sistema do kit. */
+
+/* A marca: o poste de barbearia */
+.bh-poste { width: 12px; height: 26px; border-radius: 6px; border: 2px solid currentColor; flex: none; margin-right: 10px;
+  background: repeating-linear-gradient(-45deg, #b3261e 0 4px, #fff 4px 8px, #215044 8px 12px, #fff 12px 16px); }
+.nav__logo { display: inline-flex; align-items: center; }
+
+/* Iniciais nas linhas da agenda do hero */
+.d-thumb.bh-ini { display: grid; place-items: center; background: #dfe8e3; color: #163a30; font: 500 12px/1 var(--font-text); }
+
+/* Listas de fatos simples */
+.bh-fatos { list-style: none; margin-bottom: 0; padding: 0; display: grid; gap: var(--s-3); }
+.bh-fatos li { padding-left: var(--s-6); position: relative; }
+.bh-fatos li::before { content: ""; position: absolute; left: 0; top: .55em; width: 12px; height: 6px; border-left: 2px solid var(--p-accent); border-bottom: 2px solid var(--p-accent); transform: rotate(-45deg); }
+
+.bh-demo { font-size: var(--t-small); color: var(--ink); }
+.bh-demo code { font-family: var(--font-mono); color: var(--ink); }
+
+/* Página pública de agendamento, desenhada como a tela real */
+.bh-pub { --w: 440px; width: var(--w); background: #fff; border: 1px solid rgba(23, 32, 29, .14); border-radius: 14px; overflow: hidden;
+  box-shadow: 0 20px 40px -24px rgba(23, 32, 29, .35); font-family: var(--font-text); color: #17201d; }
+.bh-pub__cabeca { background: #163a30; color: #fff; padding: 18px 20px; font: 600 28px/1 var(--font-display); }
+.bh-pub__corpo { padding: 16px 20px 24px; }
+.bh-pub__rot { margin: 14px 0 8px; font-size: 13px; font-weight: 500; }
+.bh-pub__rot:first-child { margin-top: 0; }
+.bh-pub__ops { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.bh-pub__ops--curto { grid-template-columns: repeat(3, 1fr); }
+.bh-pub__ops span { border: 1px solid #d3dbd6; border-radius: 8px; padding: 8px 10px; font-size: 14px; font-weight: 500; }
+.bh-pub__ops small { display: block; font-size: 12px; font-weight: 400; color: #55625d; }
+.bh-pub__ops .is-on { border-color: #163a30; box-shadow: inset 0 0 0 1px #163a30; background: #f4f8f6; }
+.bh-pub__slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+.bh-pub__slots span { border: 1px solid #d3dbd6; border-radius: 6px; text-align: center; padding: 6px 0; font: 600 17px/1.1 var(--font-display); }
+.bh-pub__slots .is-on { background: #17201d; border-color: #17201d; color: #fff; }
+
+/* Painéis dos 3 passos */
+#comecar .panel { --p-h: 220px; display: grid; place-items: center; padding: var(--s-5); }
+.bh-mini { width: 100%; max-width: 300px; background: #fff; border: 1px solid rgba(23, 32, 29, .12); border-radius: 10px; padding: 6px 14px; font-size: 14px; }
+.bh-mini__linha { display: grid; grid-template-columns: 1fr auto auto; gap: 14px; padding: 10px 0; border-bottom: 1px solid #e3e8e5; }
+.bh-mini__linha:last-child { border-bottom: 0; }
+.bh-mini__linha span { color: #55625d; font-variant-numeric: tabular-nums; }
+.bh-mini__linha.is-off b, .bh-mini__linha.is-off span { color: #8a958f; }
+.bh-mini--link { display: grid; gap: 12px; padding: 16px; }
+.bh-mini__url { font-family: var(--font-mono); font-size: 13px; color: #17201d; word-break: break-all; }
+.bh-mini__btn { justify-self: start; background: #c9a04a; color: #17201d; border-radius: 6px; padding: 8px 14px; font-weight: 500; }
+
+/* alturas: a seção dos passos tem duas fileiras de cards até 1279px e no celular; os preços empilham no celular */
+@media (min-width: 640px) and (max-width: 1279px) { #comecar { --h: 2; } }
+@media (max-width: 639px) { #comecar, #precos, #duvidas { --hm: 2; } }
+
+@media (max-width: 639px) {
+  .bh-pub { --w: 100%; }
+  #comecar .panel { --p-h: 180px; }
+}
+
+/* Mensagem de confirmação no WhatsApp (seção de dúvidas) */
+.bh-zap-frame { --ratio: 0px; padding: var(--s-6); justify-content: flex-start; }
+.bh-zap { width: 100%; max-width: 420px; background: #efe7dd; border-radius: 12px; overflow: hidden; font-family: var(--font-text); }
+.bh-zap__topo { display: flex; align-items: center; gap: 10px; background: #1f6f4a; color: #fff; padding: 10px 14px; font-size: 15px; }
+.bh-zap__av { width: 30px; height: 30px; border-radius: 50%; background: #dfe8e3; color: #163a30; display: grid; place-items: center; font-size: 12px; font-weight: 500; }
+.bh-zap__msg { margin: 14px 14px 16px auto; max-width: 86%; background: #d9fdd3; color: #17201d; border-radius: 10px 2px 10px 10px; padding: 10px 12px 6px; font-size: 15px; line-height: 1.45; }
+.bh-zap__msg small { display: block; text-align: right; font-size: 13px; color: #55625d; margin-top: 2px; }

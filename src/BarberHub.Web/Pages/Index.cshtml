@@ -1,78 +1,310 @@
 ﻿@page
 @model IndexModel
-@{ ViewData["Title"] = "Agendamento online para barbearias"; }
+@{
+    Layout = null;
+    var demoEmail = BarberHub.Web.Data.DadosIniciais.EmailDemo;
+    var demoSenha = BarberHub.Web.Data.DadosIniciais.SenhaDemo;
+}
+<!doctype html>
+<html lang="pt-BR" data-type="software" data-radius="soft" data-ground="sage" data-buttons="arrow" data-motion>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BarberHub: agenda online para barbearias de 1 a 5 barbeiros</title>
+<meta name="description" content="O cliente marca serviço, barbeiro e horário pelo link da barbearia, e o dono confirma pelo WhatsApp. Teste 14 dias sem cartão.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BarberHub: agenda online para barbearias">
+<meta property="og:description" content="O cliente marca pelo link da barbearia, e o dono confirma pelo WhatsApp.">
+<meta property="og:image" content="/share.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#eef1ec">
+<!-- <link rel="canonical" href="https://[domínio do BarberHub]/"> : entra quando houver domínio -->
+<meta name="site-kind" content="software">
+<meta name="page-type" content="software">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600&family=Figtree:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/system.css">
+<link rel="stylesheet" href="/assets/ui/cards.css">
+<link rel="stylesheet" href="/assets/motion/motion.css">
+<link rel="stylesheet" href="/assets/backgrounds/backgrounds.css">
+<link rel="stylesheet" href="/assets/layout/layout.css">
+<link rel="stylesheet" href="/assets/layout/demo.css">
+<style>
+/* cores do BarberHub via start.mjs brand; as fontes são as da marca (letreiro Big Shoulders + Figtree), não as sorteadas */
+:root {
+  --p-bg: #eef1ec; --p-surface: #e2e8e3; --p-ink: #17201d; --p-muted: #55625d;
+  --p-accent: #163a30; --p-accent-ink: #eef1ec; --p-action: #163a30; --p-action-ink: #eef1ec;
+  --p-inv-bg: #163a30; --p-inv-surface: #1f4a3e; --p-inv-ink: #eef1ec; --p-inv-muted: #b5c6bf;
+  --p-inv-accent: #c9a04a; --p-inv-accent-ink: #17201d; --p-inv-action: #eef1ec; --p-inv-action-ink: #17201d;
+  --font-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --font-text: "Figtree", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, Menlo, Consolas, monospace;
+  --display-weight: 600;
+  --display-tracking: 0em;
+  --display-tracking-xl: -0.005em;
+  --ly-scale: 1.12;
+}
+</style>
+<link rel="stylesheet" href="/css/inicio.css" asp-append-version="true">
+<script>document.documentElement.classList.add('m-enter');setTimeout(()=>document.documentElement.classList.add('m-enter-done'),700)</script>
+<script>document.documentElement.classList.add('mo-js');setTimeout(()=>document.documentElement.classList.add('mo-safe'),2500)</script>
+<link rel="modulepreload" href="/assets/moments/moments.js">
+<link rel="modulepreload" href="/assets/moments/lib.js">
+<link rel="modulepreload" href="/assets/moments/word-highlight/moment.js">
+</head>
+<body>
+<!-- type: software (SaaS de agendamento)
+     deal: hero collage, nav nav-centre (nav-cards pede fotos que não há), close close-word, footer footer-dark,
+           rhythm space, buttons arrow, mark: a marca do cliente (o poste), grounds: sage no hero
+     moments: word-highlight na seção #regra
+     plan: hero (agenda do dono) / #regra word-highlight / #cliente split (página do cliente, UI real) /
+           #precos pricing-two / #comecar steps (3 passos reais) / #duvidas faq com a mensagem do WhatsApp / footer.closing -->
 
-<section class="bh-hero">
-    <div>
-        <h1>Cadeira cheia, sem caderno e sem horário duplicado.</h1>
-        <p>
-            O cliente escolhe serviço, barbeiro e horário pelo link da sua barbearia. Você confirma pelo WhatsApp
-            e acompanha a agenda e o faturamento em um painel.
-        </p>
-        <div class="d-flex flex-wrap gap-2">
-            <a asp-page="/Cadastro" class="btn btn-bh btn-lg">Testar 14 dias grátis</a>
-            <a href="/b/barbearia-do-ze" class="btn btn-linha btn-lg">Ver a página de um cliente</a>
-        </div>
+<header class="nav nav--centre">
+  <div class="wrap nav__bar">
+    <a class="skip-link" href="#top">Pular para o conteúdo</a>
+    <a class="nav__logo" href="#top"><span class="bh-poste" aria-hidden="true"></span>BarberHub</a>
+    <nav class="nav__links" aria-label="Principal">
+      <div class="nav__item"><a class="nav__link" href="#cliente">Cliente</a></div>
+      <div class="nav__item"><a class="nav__link" href="#precos">Preços</a></div>
+      <div class="nav__item"><a class="nav__link" href="#comecar">Configuração</a></div>
+      <div class="nav__item"><a class="nav__link" href="#duvidas">Dúvidas</a></div>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__link" href="/Entrar">Entrar</a>
+      <a class="btn btn--primary" href="/Cadastro">Começar teste grátis</a>
     </div>
-    <div class="bh-ticket" aria-label="Exemplo de horário agendado">
-        <div class="bh-ticket-loja">Barbearia do Zé</div>
-        <div class="bh-ticket-hora">10:30</div>
-        <div class="bh-ticket-dia">Sábado, com o Zé</div>
-        <div class="bh-ticket-corte"></div>
-        <dl>
-            <dt>Serviço</dt><dd>Corte + barba</dd>
-            <dt>Duração</dt><dd>60 min</dd>
-            <dt>Valor</dt><dd>R$ 65,00</dd>
-        </dl>
-    </div>
-    <div class="bh-poste" aria-hidden="true"></div>
-</section>
+    <button class="nav__toggle" type="button" aria-expanded="false" aria-label="Menu">
+      <svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><path d="M2 5h14M2 13h14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
 
-<div class="bh-demo">
-    <strong>Conta de demonstração</strong>
-    <span>E-mail <code>@BarberHub.Web.Data.DadosIniciais.EmailDemo</code></span>
-    <span>Senha <code>@BarberHub.Web.Data.DadosIniciais.SenhaDemo</code></span>
-    <a asp-page="/Entrar" class="ms-sm-auto fw-semibold">Entrar no painel</a>
-</div>
-
-<section class="bh-recursos">
-    <div>
-        <h3>Agenda sem conflito</h3>
-        <p>Cada serviço ocupa o próprio tempo na agenda. Um corte de 30 minutos às 10h deixa o barbeiro livre só a partir das 10h30.</p>
-    </div>
-    <div>
-        <h3>Cliente marca sozinho</h3>
-        <p>Sem cadastro e sem senha, só nome e celular. Você confirma com um clique, que abre o WhatsApp com a mensagem pronta.</p>
-    </div>
-    <div>
-        <h3>Faturamento na tela</h3>
-        <p>Veja quantos atendimentos foram concluídos e quanto a barbearia faturou no mês, sem somar no papel.</p>
-    </div>
-</section>
-
-<section class="mb-5">
-    <div class="bh-secao-titulo">
-        <div>
-            <h2>Planos</h2>
-            <p>Os dois começam com 14 dias grátis, sem cartão. Cancele quando quiser.</p>
-        </div>
-    </div>
-    <div class="bh-planos">
-        @foreach (var plano in Planos.Todos)
-        {
-            var pro = plano.Plano == Plano.Pro;
-            <div class="bh-plano @(pro ? "destaque" : "")">
-                <h3>@plano.Nome</h3>
-                <div class="bh-preco">@Formulario.Moeda(plano.PrecoMensal) <small>por mês</small></div>
-                <ul>
-                    <li>@(plano.LimiteBarbeiros == 1 ? "1 barbeiro" : $"Até {plano.LimiteBarbeiros} barbeiros")</li>
-                    <li>Agendamentos ilimitados</li>
-                    <li>Página de agendamento com o nome da barbearia</li>
-                    <li>Confirmação pelo WhatsApp</li>
-                </ul>
-                <a asp-page="/Cadastro" class="btn @(pro ? "btn-bh" : "btn-linha")">Começar com o @plano.Nome</a>
-                <div class="bh-plano-nota mt-2">@(pro ? "Para barbearias com equipe." : "Para quem atende sozinho.")</div>
+<main id="top">
+  <section class="hero hero--collage" data-enter aria-labelledby="hero-h">
+    <div class="wrap"><div class="hero-text grid hero__grid">
+      <div class="hero__text span-5">
+        <h1 id="hero-h">Agenda online para barbearias</h1>
+        <p class="hero__lead">O cliente escolhe serviço, barbeiro e horário livre pelo link da sua barbearia. Você confirma pelo WhatsApp. A partir de R$&nbsp;49,90 por mês.</p>
+        <div class="btn-row"><a class="btn btn--primary" href="/Cadastro">Começar teste grátis<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a><a class="btn btn--secondary" href="/b/barbearia-do-ze">Ver página de agendamento</a></div>
+        <p class="hero__proof">14 dias grátis, sem cartão.</p>
+      </div>
+      <div class="hero__art span-6 start-7" role="img" aria-label="Agenda do dia da Barbearia do Zé com os horários de cada cliente e o status, e um aviso de agendamento novo confirmado pelo WhatsApp">
+        <div class="ly-piece ly-piece--main d-win" aria-hidden="true">
+          <div class="d-win__bar"><span class="d-win__dots"><i></i><i></i><i></i></span><span>BarberHub · Barbearia do Zé</span></div>
+          <div class="d-win__body">
+            <div class="d-side">
+              <span><i></i>Painel</span><span class="is-on"><i></i>Agenda</span><span><i></i>Serviços</span><span><i></i>Barbeiros</span><span><i></i>Expediente</span>
+              <span class="d-side__label">Barbeiros</span><span><i></i>Zé</span><span><i></i>Tião</span>
             </div>
-        }
+            <div class="d-main">
+              <div class="d-main__head"><h4>Terça, 24 de novembro</h4><span class="d-btn">Abrir WhatsApp</span></div>
+              <div class="d-tabs"><span class="is-on">Todos 6</span><span>Em aberto 4</span><span>Concluídos 2</span></div>
+              <div class="d-rows">
+                <div class="d-row"><span class="d-thumb bh-ini">CS</span><div><b>Carlos S.</b><small>Corte · Zé</small></div><span class="num">09:00</span><span class="d-chip">Concluído</span></div>
+                <div class="d-row"><span class="d-thumb bh-ini">PL</span><div><b>Pedro L.</b><small>Corte e barba · Tião</small></div><span class="num">09:30</span><span class="d-chip">Concluído</span></div>
+                <div class="d-row"><span class="d-thumb bh-ini">RC</span><div><b>Rafael C.</b><small>Corte e barba · Zé</small></div><span class="num">10:30</span><span class="d-chip d-chip--low">Agendado</span></div>
+                <div class="d-row"><span class="d-thumb bh-ini">LA</span><div><b>Lucas A.</b><small>Barba · Tião</small></div><span class="num">11:00</span><span class="d-chip">Confirmado</span></div>
+                <div class="d-row"><span class="d-thumb bh-ini">CS</span><div><b>Carlos S.</b><small>Barba · Zé</small></div><span class="num">14:00</span><span class="d-chip">Confirmado</span></div>
+                <div class="d-row"><span class="d-thumb bh-ini">PL</span><div><b>Pedro L.</b><small>Corte · Tião</small></div><span class="num">16:30</span><span class="d-chip d-chip--low">Agendado</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="ly-piece ly-piece--note d-card" aria-hidden="true" data-ly-steps="700">
+          <div class="d-card__row"><h5>Rafael Costa, 10:30</h5><span class="d-chip" data-step data-step-at="4">Confirmado</span></div>
+          <div class="d-note__line" data-step><i>✓</i><span><b>Corte + barba</b> com o Zé, 60 min</span></div>
+          <div class="d-note__line" data-step><i>✓</i><span>Celular conferido: <b>(11) 98765-4321</b></span></div>
+          <div class="d-note__line" data-step><i>✓</i><span>WhatsApp aberto com a <b>mensagem pronta</b></span></div>
+        </div>
+      </div>
+    </div></div>
+  </section>
+
+  <section class="section statement" id="regra" data-moment="word-highlight" aria-label="Regra da agenda">
+    <div class="wrap">
+      <p class="t-label">Regra da agenda</p>
+      <p class="mo-wh__text">Cada serviço ocupa o próprio tempo na agenda. Um corte de 30 minutos às 10h deixa o barbeiro livre <strong>às 10h30</strong>, e o BarberHub nunca marca dois clientes na mesma cadeira ao mesmo tempo.</p>
     </div>
-</section>
+  </section>
+
+  <section class="section" id="cliente" aria-labelledby="cliente-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-5 stack-6">
+          <h2 id="cliente-h">Página de agendamento sem cadastro</h2>
+          <p class="t-lead">Ele abre o link, escolhe o serviço e vê só os horários em que o serviço inteiro cabe na agenda do barbeiro.</p>
+          <ul class="bh-fatos">
+            <li>Pede só nome e celular com DDD.</li>
+            <li>Mostra o número formatado para conferir antes de gravar.</li>
+            <li>Aceita até 2 horários em aberto por celular.</li>
+          </ul>
+          <a class="link" href="/b/barbearia-do-ze">Ver página de agendamento</a>
+        </div>
+        <div class="frame frame--split frame--lit span-6 start-7" style="--ratio: 96%">
+          <div class="stage stage--fade-br">
+            <div class="ui bh-pub at-rise to-edge" role="img" aria-label="Página de agendamento da Barbearia do Zé com Corte + barba escolhido, o barbeiro Zé e os horários livres de terça">
+              <div class="bh-pub__cabeca">Barbearia do Zé</div>
+              <div class="bh-pub__corpo" aria-hidden="true">
+                <p class="bh-pub__rot">Serviço</p>
+                <div class="bh-pub__ops">
+                  <span>Corte<small>30 min, R$ 40,00</small></span>
+                  <span class="is-on">Corte + barba<small>60 min, R$ 65,00</small></span>
+                </div>
+                <p class="bh-pub__rot">Barbeiro</p>
+                <div class="bh-pub__ops bh-pub__ops--curto"><span>Tião</span><span class="is-on">Zé</span></div>
+                <p class="bh-pub__rot">Horários livres, terça 24/11</p>
+                <div class="bh-pub__slots">
+                  <span>09:00</span><span>09:15</span><span>09:30</span><span>09:45</span>
+                  <span class="is-on">10:30</span><span>10:45</span><span>11:00</span><span>13:00</span>
+                  <span>13:15</span><span>13:30</span><span>14:30</span><span>15:00</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="precos" aria-labelledby="precos-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-4 stack-6">
+          <h2 id="precos-h">Planos do BarberHub</h2>
+          <p>Os dois planos começam com 14 dias grátis, sem cartão. Pagar durante o teste não faz perder os dias que faltam.</p>
+          <ul class="bh-fatos">
+            <li>Agendamentos ilimitados</li>
+            <li>Página de agendamento com o nome da barbearia</li>
+            <li>Confirmação pelo WhatsApp</li>
+            <li>Faturamento do mês no painel</li>
+          </ul>
+          <p class="bh-demo">Quer ver por dentro antes? Entre com <code>@demoEmail</code> e a senha <code>@demoSenha</code>.</p>
+        </div>
+        <article class="card card--plan span-4 start-5">
+          <h3>Básico</h3>
+          <p class="muted">Para quem atende sozinho</p>
+          <p class="price"><span class="t-stat">R$ 49,90</span><span class="muted">por mês</span></p>
+          <a class="btn btn--secondary" href="/Cadastro">Assinar o Básico</a>
+          <ul class="checks"><li>1 barbeiro</li><li>Serviços e preços sem limite</li><li>Expediente por dia da semana</li><li>Link de agendamento próprio</li><li>Mensalidade no cartão</li><li>Muda para o Pro quando contratar</li></ul>
+        </article>
+        <article class="card card--plan is-featured span-4 start-9">
+          <h3>Pro</h3>
+          <p class="muted">Para barbearias com equipe</p>
+          <p class="price"><span class="t-stat">R$ 99,90</span><span class="muted">por mês</span></p>
+          <a class="btn btn--secondary" href="/Cadastro">Assinar o Pro</a>
+          <ul class="checks"><li>Até 5 barbeiros</li><li>Cliente escolhe o barbeiro</li><li>Agenda separada por barbeiro</li><li>Serviços e preços sem limite</li><li>Mensalidade no cartão</li><li>Volta ao Básico com 1 barbeiro ativo</li></ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="comecar" aria-labelledby="comecar-h">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="comecar-h">Sua agenda no ar em 3 passos</h2>
+        <p>Tudo pelo painel, sem instalar nada. A conta de teste já vem com o expediente de segunda a sábado, das 9h às 19h.</p>
+      </div>
+      <div class="grid">
+        <article class="card card--row span-4">
+          <span class="step-num">1</span>
+          <h3>Cadastre os serviços</h3>
+          <p>Preço e duração de cada um. A duração define quanto tempo o horário fica bloqueado.</p>
+          <div class="panel bh-painel" aria-hidden="true">
+            <div class="bh-mini">
+              <div class="bh-mini__linha"><b>Corte</b><span>30 min</span><span>R$ 40,00</span></div>
+              <div class="bh-mini__linha"><b>Barba</b><span>30 min</span><span>R$ 30,00</span></div>
+              <div class="bh-mini__linha"><b>Corte + barba</b><span>60 min</span><span>R$ 65,00</span></div>
+            </div>
+          </div>
+        </article>
+        <article class="card card--row span-4">
+          <span class="step-num">2</span>
+          <h3>Ajuste barbeiros e expediente</h3>
+          <p>Um barbeiro no Básico, até cinco no Pro. Abra e feche cada dia no horário da casa.</p>
+          <div class="panel bh-painel" aria-hidden="true">
+            <div class="bh-mini">
+              <div class="bh-mini__linha"><b>Segunda</b><span>09:00</span><span>19:00</span></div>
+              <div class="bh-mini__linha"><b>Sábado</b><span>08:00</span><span>14:00</span></div>
+              <div class="bh-mini__linha is-off"><b>Domingo</b><span>Fechado</span><span></span></div>
+            </div>
+          </div>
+        </article>
+        <article class="card card--row span-4">
+          <span class="step-num">3</span>
+          <h3>Compartilhe o link</h3>
+          <p>Coloque na bio do Instagram, no Google e no status do WhatsApp.</p>
+          <div class="panel bh-painel" aria-hidden="true">
+            <div class="bh-mini bh-mini--link">
+              <span class="bh-mini__url">barberhub/b/barbearia-do-ze</span>
+              <span class="bh-mini__btn">Copiar link</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="duvidas" aria-labelledby="duvidas-h">
+    <div class="wrap">
+      <div class="grid">
+        <div class="span-5 stack-6">
+          <h2 id="duvidas-h">Dúvidas sobre a agenda online</h2>
+          <p>A confirmação sai do seu WhatsApp, com a mensagem já escrita pelo BarberHub.</p>
+          <div class="frame frame--lit bh-zap-frame">
+            <div class="bh-zap" role="img" aria-label="Mensagem de confirmação no WhatsApp para o cliente Rafael Costa, com serviço, barbeiro, dia e horário">
+              <div class="bh-zap__topo" aria-hidden="true"><span class="bh-zap__av">RC</span><b>Rafael Costa</b></div>
+              <p class="bh-zap__msg" aria-hidden="true">Olá, Rafael Costa! Aqui é da Barbearia do Zé. Confirmando seu horário: Corte + barba com Zé em 24/11 às 10:30. Podemos confirmar?<small>10:02</small></p>
+            </div>
+          </div>
+          <a class="link" href="/Entrar">Entrar na conta de demonstração</a>
+        </div>
+        <div class="faq span-6 start-7">
+          <div class="faq__item"><h3>O cliente precisa baixar app ou criar conta?</h3><p>Não. Ele abre o link da barbearia no celular, escolhe o horário e informa nome e celular.</p></div>
+          <div class="faq__item"><h3>E se o cliente digitar o celular errado?</h3><p>O BarberHub só aceita celular com DDD e mostra o número formatado para o cliente conferir antes de confirmar.</p></div>
+          <div class="faq__item"><h3>O sistema manda lembrete sozinho?</h3><p>Ainda não. A confirmação é um clique seu: o BarberHub abre o WhatsApp com a mensagem pronta para o cliente.</p></div>
+          <div class="faq__item"><h3>Posso trocar de plano depois?</h3><p>Sim, pelo painel. Para voltar ao Básico, deixe só um barbeiro ativo antes.</p></div>
+          <div class="faq__item"><h3>O que acontece depois dos 14 dias?</h3><p>Você paga com cartão no painel. Sem pagamento, a página deixa de aceitar horários novos, e a agenda continua salva.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer closing footer--dark ground-inverse" id="contact" aria-labelledby="close-h">
+  <div class="wrap">
+    <div class="closing__cta close--word">
+      <div class="section-head--split">
+        <div><h2 id="close-h">Teste o BarberHub por 14 dias</h2><p class="t-lead">Sem cartão. A agenda fica no ar no mesmo dia.</p></div>
+        <a class="btn btn--primary" href="/Cadastro">Começar teste grátis<svg class="m-arrow" viewBox="0 0 12 12" aria-hidden="true"><path class="m-arrow__stem" d="M1 6h8"/><path class="m-arrow__head" d="M4.5 2.5 8 6l-3.5 3.5"/></svg></a>
+      </div>
+      <p class="close__word" aria-hidden="true">BarberHub</p>
+    </div>
+    <div class="closing__links">
+      <div class="grid">
+        <div class="span-4 stack-4">
+          <p class="footer__lede">Agenda online para barbearias de 1 a 5 barbeiros. Trabalho acadêmico da FATEC.</p>
+        </div>
+        <div class="span-2 footer__col"><h3>Produto</h3><ul><li><a href="#cliente">Cliente</a></li><li><a href="#comecar">Configuração</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Planos</h3><ul><li><a href="#precos">Preços</a></li><li><a href="#duvidas">Dúvidas</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Conta</h3><ul><li><a href="/Entrar">Entrar</a></li><li><a href="/Cadastro">Criar conta</a></li></ul></div>
+        <div class="span-2 footer__col"><h3>Demonstração</h3><ul><li><a href="/b/barbearia-do-ze">Barbearia do Zé</a></li></ul></div>
+      </div>
+      <div class="footer__legal">
+        <span>&copy; 2026 BarberHub</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<nav class="actionbar" aria-label="Ações rápidas">
+  <a class="btn btn--primary" href="/Cadastro">Começar teste grátis</a>
+</nav>
+
+<script type="module" src="/assets/system.js"></script>
+<script type="module" src="/assets/motion/motion.js"></script>
+<script type="module" src="/assets/layout/layout.js"></script>
+</body>
+</html>
