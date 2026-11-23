@@ -31,8 +31,7 @@
                     <label class="bh-opcao-plano" for="plano-@plano.Plano">
                         <div>
                             <input class="form-check-input me-2" type="radio" asp-for="Plano" value="@plano.Plano" id="plano-@plano.Plano" />
-                            <strong>@plano.Nome</strong>
-                            <span>, @(plano.LimiteBarbeiros == 1 ? "1 barbeiro" : $"até {plano.LimiteBarbeiros} barbeiros")</span>
+                            <strong>@plano.Nome</strong><span>, @(plano.LimiteBarbeiros == 1 ? "1 barbeiro" : $"até {plano.LimiteBarbeiros} barbeiros")</span>
                         </div>
                         <strong>@Formulario.Moeda(plano.PrecoMensal)/mês</strong>
                     </label>

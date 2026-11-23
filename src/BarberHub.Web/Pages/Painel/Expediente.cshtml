@@ -21,7 +21,7 @@
                 <div class="col-4">
                     <div class="form-check form-switch">
                         <input class="form-check-input" type="checkbox" name="aberto-@dia" id="aberto-@dia" checked="@(h is not null)" />
-                        <label class="form-check-label text-capitalize fw-semibold" for="aberto-@dia">@BarberHub.Web.Pages.Painel.ExpedienteModel.Nome(dia)</label>
+                        @{ var nomeDia = BarberHub.Web.Pages.Painel.ExpedienteModel.Nome(dia); }<label class="form-check-label fw-semibold" for="aberto-@dia">@(char.ToUpper(nomeDia[0]) + nomeDia[1..])</label>
                     </div>
                 </div>
                 <div class="col-4"><input type="time" class="form-control" name="abre-@dia" value="@((h?.Abre ?? new TimeOnly(9, 0)).ToString("HH:mm"))" step="900" aria-label="Abre" /></div>

@@ -21,41 +21,31 @@
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table">
-                <thead>
-                    <tr><th>Horário</th><th>Cliente</th><th>Serviço</th><th>Barbeiro</th><th>Status</th><th class="text-end"><span class="visually-hidden">Ações</span></th></tr>
-                </thead>
-                <tbody>
-                    @foreach (var a in Model.Atendimentos)
+        <ul class="bh-agenda">
+            @foreach (var a in Model.Atendimentos)
+            {
+                var aberto = a.Status is StatusAgendamento.Agendado or StatusAgendamento.Confirmado;
+                <li class="bh-agenda__item @(a.Status == StatusAgendamento.Cancelado ? "cancelado" : "")">
+                    <div class="bh-hora">@a.Inicio.ToString("HH:mm")<small>até @a.Fim.ToString("HH:mm")</small></div>
+                    <div class="bh-agenda__cliente"><span class="fw-semibold">@a.Cliente.Nome</span><small>@Telefone.Formatar(a.Cliente.Telefone)</small></div>
+                    <div class="bh-agenda__servico">@a.Servico.Nome com @a.Barbeiro.Nome<small>@Formulario.Moeda(a.Preco)</small></div>
+                    <div class="bh-agenda__status"><span class="badge-status status-@a.Status">@a.Status.Rotulo()</span></div>
+                    @if (aberto)
                     {
-                        var aberto = a.Status is StatusAgendamento.Agendado or StatusAgendamento.Confirmado;
-                        <tr class="@(a.Status == StatusAgendamento.Cancelado ? "cancelado" : "")">
-                            <td class="bh-hora">@a.Inicio.ToString("HH:mm")<small>até @a.Fim.ToString("HH:mm")</small></td>
-                            <td><span class="fw-semibold">@a.Cliente.Nome</span><br /><small class="text-muted">@Telefone.Formatar(a.Cliente.Telefone)</small></td>
-                            <td>@a.Servico.Nome<br /><small class="text-muted">@Formulario.Moeda(a.Preco)</small></td>
-                            <td>@a.Barbeiro.Nome</td>
-                            <td><span class="badge-status status-@a.Status">@a.Status.Rotulo()</span></td>
-                            <td class="text-end">
-                                @if (aberto)
-                                {
-                                    <form method="post" class="d-inline-flex flex-wrap gap-1 justify-content-end">
-                                        <input type="hidden" name="id" value="@a.Id" />
-                                        <input type="hidden" name="Data" value="@Model.Dia.ToString("yyyy-MM-dd")" />
-                                        @if (a.Status == StatusAgendamento.Agendado)
-                                        {
-                                            <a class="btn btn-sm btn-whats" href="@Model.LinkWhatsApp(a)" target="_blank" rel="noopener">WhatsApp</a>
-                                            <button class="btn btn-sm btn-linha" asp-page-handler="Confirmar">Confirmar</button>
-                                        }
-                                        <button class="btn btn-sm btn-verde" asp-page-handler="Concluir">Concluir</button>
-                                        <button class="btn btn-sm btn-perigo" asp-page-handler="Cancelar" onclick="return confirm('Cancelar este atendimento?')">Cancelar</button>
-                                    </form>
-                                }
-                            </td>
-                        </tr>
+                        <form method="post" class="bh-agenda__acoes">
+                            <input type="hidden" name="id" value="@a.Id" />
+                            <input type="hidden" name="Data" value="@Model.Dia.ToString("yyyy-MM-dd")" />
+                            @if (a.Status == StatusAgendamento.Agendado)
+                            {
+                                <a class="btn btn-sm btn-whats" href="@Model.LinkWhatsApp(a)" target="_blank" rel="noopener">WhatsApp</a>
+                                <button class="btn btn-sm btn-linha" asp-page-handler="Confirmar">Confirmar</button>
+                            }
+                            <button class="btn btn-sm btn-verde" asp-page-handler="Concluir">Concluir</button>
+                            <button class="btn btn-sm btn-perigo" asp-page-handler="Cancelar" onclick="return confirm('Cancelar este atendimento?')">Cancelar</button>
+                        </form>
                     }
-                </tbody>
-            </table>
-        </div>
+                </li>
+            }
+        </ul>
     }
 </div>

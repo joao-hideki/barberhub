@@ -66,21 +66,16 @@
     }
     else
     {
-        <div class="table-responsive">
-            <table class="table">
-                <tbody>
-                    @foreach (var a in Model.AgendaDeHoje)
-                    {
-                        <tr class="@(a.Status == StatusAgendamento.Cancelado ? "cancelado" : "")">
-                            <td class="bh-hora">@a.Inicio.ToString("HH:mm")</td>
-                            <td class="fw-semibold">@a.Cliente.Nome</td>
-                            <td>@a.Servico.Nome</td>
-                            <td class="text-muted">com @a.Barbeiro.Nome</td>
-                            <td class="text-end"><span class="badge-status status-@a.Status">@a.Status.Rotulo()</span></td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        <ul class="bh-agenda">
+            @foreach (var a in Model.AgendaDeHoje)
+            {
+                <li class="bh-agenda__item bh-agenda__item--resumo @(a.Status == StatusAgendamento.Cancelado ? "cancelado" : "")">
+                    <div class="bh-hora">@a.Inicio.ToString("HH:mm")</div>
+                    <div class="bh-agenda__cliente"><span class="fw-semibold">@a.Cliente.Nome</span></div>
+                    <div class="bh-agenda__servico">@a.Servico.Nome com @a.Barbeiro.Nome</div>
+                    <div class="bh-agenda__status"><span class="badge-status status-@a.Status">@a.Status.Rotulo()</span></div>
+                </li>
+            }
+        </ul>
     }
 </div>

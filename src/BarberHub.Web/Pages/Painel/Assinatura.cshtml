@@ -11,9 +11,9 @@
         <h2>Assinatura</h2>
         <p>
             Plano atual: <strong>@Planos.Info(b.Plano).Nome</strong>,
-            @if (!ativa) { <span class="text-danger fw-bold">vencido em @b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</span> }
-            else if (b.EmPeriodoGratis) { <span>período grátis até <strong>@b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</strong></span> }
-            else { <span>ativo até <strong>@b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</strong></span> }.
+            @if (!ativa) { <span class="text-danger fw-bold">vencido em @b.AssinaturaValidaAte.ToString("dd/MM/yyyy").</span> }
+            else if (b.EmPeriodoGratis) { <span>período grátis até <strong>@b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</strong>.</span> }
+            else { <span>ativo até <strong>@b.AssinaturaValidaAte.ToString("dd/MM/yyyy")</strong>.</span> }
         </p>
     </div>
 </div>
@@ -28,8 +28,7 @@
                     <label class="bh-opcao-plano" for="plano-@p.Plano">
                         <div>
                             <input type="radio" class="form-check-input me-2" asp-for="Plano" value="@p.Plano" id="plano-@p.Plano" />
-                            <strong>@p.Nome</strong>
-                            <span>, @(p.LimiteBarbeiros == 1 ? "1 barbeiro" : $"até {p.LimiteBarbeiros} barbeiros")</span>
+                            <strong>@p.Nome</strong><span>, @(p.LimiteBarbeiros == 1 ? "1 barbeiro" : $"até {p.LimiteBarbeiros} barbeiros")</span>
                         </div>
                         <strong>@Formulario.Moeda(p.PrecoMensal)/mês</strong>
                     </label>
