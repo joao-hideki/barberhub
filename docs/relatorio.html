@@ -201,6 +201,7 @@
   <tr><td>Relógio controlado</td><td><code>TimeProvider</code> injetado: os testes fixam "segunda, 23/11/2026, 09:00" e avançam o tempo para testar o fim do período grátis.</td></tr>
   <tr><td>Arquitetura em camadas</td><td>Interface (Pages), lógica (Services/Domain) e dados (Data) separadas.</td></tr>
   <tr><td>Injeção de dependência e interfaces</td><td><code>IGatewayPagamento</code>: para trocar o simulador por um gateway real, basta mudar uma linha do <code>Program.cs</code>.</td></tr>
+  <tr><td>Pagamento simulado (decisão de projeto)</td><td>Um gateway real exige chaves de API, proibidas no repositório pelo enunciado, e um <em>webhook</em> com endereço público, inviável numa demonstração local. Por isso a cobrança passa por um simulador (cartão final 0000 é recusado), e a integração real fica como próximo passo.</td></tr>
   <tr><td>Multi-tenant</td><td><code>BarbeariaId</code> do usuário logado vem do cookie, e todos os serviços filtram por ele. Há testes garantindo que uma barbearia não altera dados de outra.</td></tr>
   <tr><td>Segurança</td><td>Senha com hash PBKDF2 e salt, cookie de autenticação, token CSRF e nenhuma credencial no repositório (<code>.env</code> ignorado pelo git).</td></tr>
   <tr><td>ORM e migrations</td><td>EF Core gera e aplica o esquema do banco automaticamente.</td></tr>
@@ -212,7 +213,7 @@
   <li>O dono cria a barbearia no plano Básico e cai no painel com 14 dias grátis.</li>
   <li>Cadastra o serviço "Corte" (R$ 45,50, 45 min) e um barbeiro. O segundo barbeiro é bloqueado pelo plano.</li>
   <li>O cliente abre o link público, escolhe serviço, barbeiro e dia e vê só os horários que cabem. Informa um celular inválido (recusado), corrige, confere e confirma.</li>
-  <li>O horário some da lista. O dono o vê na agenda, chama o cliente no WhatsApp, confirma e conclui. O faturamento do mês é atualizado.</li>
+  <li>O horário some da lista. O dono o vê na agenda e o confirma ou cancela; se precisar, fala com o cliente pelo WhatsApp com a mensagem pronta. Depois conclui, e o faturamento do mês é atualizado.</li>
   <li>O dono paga a assinatura: o cartão final 0000 é recusado e o 4111 é aprovado. O plano vira Pro e o segundo barbeiro é liberado.</li>
 </ol>
 <p class="pequeno">Esse fluxo também foi automatizado como teste ponta a ponta via HTTP durante o desenvolvimento.</p>
@@ -236,23 +237,17 @@
 
 <h3>Exemplos concretos</h3>
 <div class="caixa">
-  <strong>1. Gateway de pagamento.</strong> O autor perguntou se dava para integrar um gateway real. A IA ponderou que isso exigiria
-  conta e <strong>chaves de API</strong> (proibidas no repositório pelo enunciado) e um <em>webhook</em> com URL pública
-  (a demonstração é local), além do risco de falhar ao vivo. Ela propôs a interface <code>IGatewayPagamento</code> com
-  um <code>GatewayPagamentoSimulado</code> (cartão final 0000 é recusado). A integração real ficou como próximo passo, que exige trocar só uma linha.
-</div>
-<div class="caixa">
-  <strong>2. Risco de telefone errado.</strong> O autor apontou que o cliente poderia digitar o celular errado. A IA sugeriu proteção em camadas,
+  <strong>1. Risco de telefone errado.</strong> O autor apontou que o cliente poderia digitar o celular errado. A IA sugeriu proteção em camadas,
   que viraram regras testadas: normalizar e validar o celular (DDD existente e 9º dígito), mostrar uma tela de conferência
   com o número formatado, confirmar pela barbearia com um link do WhatsApp (sem custo de API) e limitar a 2 horários em aberto por celular, contra trote.
 </div>
 <div class="caixa">
-  <strong>3. Solução de problema.</strong> Ao instalar os pacotes, o NuGet trouxe o EF Core 11, que exige o .NET 11 (não instalado).
+  <strong>2. Solução de problema.</strong> Ao instalar os pacotes, o NuGet trouxe o EF Core 11, que exige o .NET 11 (não instalado).
   A IA identificou o erro <code>NU1202</code> e fixou as versões compatíveis com o .NET 10. Durante a revisão visual,
   ela também encontrou um card esticado na página pública e corrigiu a regra de CSS responsável.
 </div>
 <div class="caixa">
-  <strong>4. Redesenho com verificação automática.</strong> A interface inicial foi considerada genérica. Com a skill
+  <strong>3. Redesenho com verificação automática.</strong> A interface inicial foi considerada genérica. Com a skill
   <em>design-taste-frontend</em>, a IA refez a página inicial mantendo as cores da marca e passou por um verificador que
   testa a página em 5 larguras de tela. Depois, ao revisar os prints em telas de notebook (1366x768), o autor percebeu
   que o rodapé ficava sobreposto: as seções tinham altura fixa de uma tela. A correção fez as seções crescerem com o conteúdo
@@ -269,7 +264,7 @@
   <li>Regras de horário: sobreposição de intervalos, serviço que precisa caber inteiro no expediente e fuso horário.</li>
   <li>Disciplina do TDD: resistir a escrever o código antes do teste.</li>
   <li>Cobrança sem gateway real e sem expor credenciais.</li>
-  <li>Interface responsiva: o layout precisou ser conferido em várias larguras e alturas de tela.</li>
+  <li>Confirmar que o celular informado é mesmo do cliente: o sistema valida o formato e pede conferência, mas não envia um código por SMS (OTP).</li>
 </ul>
 <h3>Próximos passos</h3>
 <ul>

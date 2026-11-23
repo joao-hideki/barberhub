@@ -52,8 +52,8 @@ Mostrar o diagrama do relatório (seção 2):
 
 - Ferramenta: **Claude Code** (Claude Opus 5.5).
 - Ajudou no planejamento do escopo, na programação em TDD, nos testes, na solução de problemas e na documentação.
-- **Exemplo concreto:** a IA recomendou **não** integrar um gateway real (chaves de API proibidas no repositório, webhook precisa de URL pública, risco na demo) e propôs a interface `IGatewayPagamento` com simulador.
-- **Outro exemplo:** quando eu levantei o risco de o cliente digitar o telefone errado, a IA propôs a proteção em camadas que virou regra testada.
+- **Exemplo concreto:** quando eu levantei o risco de o cliente digitar o telefone errado, a IA propôs a proteção em camadas (validação, conferência e limite de horários), que virou regra testada.
+- **Outro exemplo:** revisando os prints numa tela de notebook, eu vi o rodapé sobreposto; a correção fez as seções crescerem com o conteúdo.
 - "Revisei todo o código e sei explicar cada parte."
 
 ## 6. Dificuldades e próximos passos (30 s)
