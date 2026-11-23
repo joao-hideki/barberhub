@@ -58,7 +58,7 @@ Mostrar o diagrama do relatório (seção 2):
 
 ## 6. Dificuldades e próximos passos (30 s)
 
-- **Dificuldades:** regras de horário (sobreposição, caber no expediente), manter a disciplina do TDD, cobrança sem credenciais.
+- **Dificuldades:** regras de horário (sobreposição, caber no expediente), confirmar que o celular é do cliente sem código por SMS (OTP) e manter a disciplina do TDD.
 - **Próximos passos:** gateway real, código de confirmação (OTP) e lembrete por WhatsApp, folgas por barbeiro, publicação em nuvem.
 
 ## Perguntas prováveis do professor
