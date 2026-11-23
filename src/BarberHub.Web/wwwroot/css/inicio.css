@@ -62,3 +62,28 @@
 
 /* o card de resultado do hero collage: 300px, 32px do canto inferior esquerdo da moldura (receita do hero) */
 .hero__art > .ly-piece--note { left: var(--s-7); bottom: var(--s-7); top: auto; width: 330px; z-index: 2; }
+
+/* Telas de desktop baixas (notebook 1366x768 com a barra do navegador): o kit fixa cada seção na altura
+   exata da tela, então o conteúdo que não cabe passava por cima da seção seguinte (o rodapé ficava
+   sobreposto). Aqui a seção cresce com o conteúdo, como o próprio kit já faz no tablet e no celular. */
+@media (min-width: 1280px) and (max-height: 859px) {
+  main > :is(section, .section):not(.hero), footer.closing {
+    height: auto; min-height: calc(var(--h, 1) * 100svh); display: flex; flex-direction: column;
+  }
+  main > :is(section, .section):not(.hero) > .wrap, footer.closing > .wrap { flex: 1 0 auto; height: auto; }
+  .close__word { font-size: clamp(64px, 9vw, 140px); margin-top: var(--s-7); }
+}
+
+/* o texto do rodapé na fonte de leitura (no letreiro condensado ficava apertado) */
+.closing__links .footer__lede { font-family: var(--font-text); font-weight: 400; letter-spacing: 0; font-size: var(--t-body); line-height: 1.6; }
+
+/* tela baixa: o hero fica curto e o card de resultado cobriria as linhas da agenda */
+@media (max-height: 699px) { .hero__art > .ly-piece--note { display: none; } }
+
+/* agenda do hero: as linhas têm 4 itens (iniciais, nome, hora, status), sem a 5ª coluna da demo do kit */
+.hero__art .d-row { grid-template-columns: 36px minmax(0, 1fr) 48px auto; }
+.hero__art .d-row b, .hero__art .d-row small { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* notebooks (1024 a 1439): a barra lateral da janela sai para o nome e o serviço caberem */
+@media (min-width: 1024px) and (max-width: 1439px) { .hero__art .d-win__body { grid-template-columns: 1fr; } .hero__art .d-side { display: none; } }
+/* o recorte da moldura cai na folga à direita, nunca sobre o status (regra do hero collage) */
+.hero__art .d-main { padding-right: var(--ly-cut-room); }
